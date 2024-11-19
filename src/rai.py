@@ -60,7 +60,8 @@ class rai():
 
         return pts_w
 
-    def cam_to_world(self, pts, cam_frame):
+    @staticmethod
+    def cam_to_world(pts, cam_frame):
         t = cam_frame.getPosition() 
         R = cam_frame.getRotationMatrix()
         points_camera_frame = pts
