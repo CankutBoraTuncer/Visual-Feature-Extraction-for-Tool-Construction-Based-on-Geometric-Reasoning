@@ -12,6 +12,6 @@ pip install robotic
 git clone https://github.com/CankutBoraTuncer/CS554_Computer_Vision_Project.git
 ```
 
-## Clone the library
+## Testing
 Run the main.py file in the test folder.
 
