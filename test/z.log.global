@@ -1,15 +1,14 @@
 ** compiled at:     Nov 16 2024 19:00:08
-** execution start: 2024-11-19 17:45:16:95071
+** execution start: 2024-11-19 20:32:14:890768
 graph.cpp:initParameters:1512(3) opening config file 'rai.cfg'
 graph.cpp:initParameters:1519(3)  - failed
 graph.cpp:initParameters:1525(3) opening base config file '/root/local/rai/../local.cfg'
 graph.cpp:initParameters:1531(3)  - failed
-kin.cpp:getFrame:415(-1) cannot find frame named 'world'
-util.cpp:cd_start:1034(3) entering path '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:cd_file:1042(3) entering path '../LIRA_models/stl' from '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:getIs:1071(3) opening input file 'hammer_handle.stl'
-util.cpp:cd_start:1034(3) entering path '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:cd_file:1042(3) entering path '../src/config' from '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:getIs:1071(3) opening input file 'base.g'
+util.cpp:cd_start:1034(3) entering path '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:cd_start:1034(3) entering path '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:cd_file:1042(3) entering path '../LIRA_models/stl' from '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:getIs:1071(3) opening input file 'hammer_handle.stl'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'

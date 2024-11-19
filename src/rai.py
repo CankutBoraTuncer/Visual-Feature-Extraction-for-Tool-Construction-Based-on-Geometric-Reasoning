@@ -24,18 +24,19 @@ class rai():
             img = np.asarray(img)
             depth = np.asarray(depth)
             seg = camera_view.computeSegmentationImage()
+
             filter_id = int(self.C.getFrame(object_name).info()["ID"])
             filter_color = self.id2color(filter_id)
 
             masked_img = img.copy()
             masked_depth = depth.copy()
-
+            
             for i in range(masked_img.shape[0]):
                 for j in range(masked_img.shape[1]):
+                    seg[i][j] = [x + 1 if x % 2 != 0 else x for x in seg[i][j]]
                     if (seg[i][j] == filter_color).all() == False:
                         masked_img[i][j] = [0, 0, 0]
                         masked_depth[i][j] = 0
-
             
             pts = ry.depthImage2PointCloud(masked_depth, camera_view.getFxycxy())
             pts = self.cam_to_world(pts.reshape(-1, 3), cam)
@@ -81,10 +82,18 @@ class rai():
     @staticmethod
     def id2color(id):
         rgb = [0, 0, 0]
-        rgb[0] = (((id >> 6) & 0x3F) | ((id & 1) << 7) | ((id & 8) << 3))
-        rgb[1] = (((id >> 12) & 0x3F) | ((id & 2) << 6) | ((id & 16) << 2)) 
-        rgb[2] = (((id >> 18) & 0x3F) | ((id & 4) << 5) | ((id & 32) << 1)) 
+        rgb[0] = ((id >> 6) & 0x3F) | ((id & 1) << 7) | ((id & 8) << 3)
+        rgb[1] = ((id >> 12) & 0x3F) | ((id & 2) << 6) | ((id & 16) << 2)
+        rgb[2] = ((id >> 18) & 0x3F) | ((id & 4) << 5) | ((id & 32) << 1)
         return np.asarray(rgb)
+    
+    @staticmethod
+    def color2id(rgb):
+        id = 0
+        id |= ((rgb[0] & 0x80) >> 7) | ((rgb[1] & 0x80) >> 6) | ((rgb[2] & 0x80) >> 5) 
+        id |= ((rgb[0] & 0x40) >> 3) | ((rgb[1] & 0x40) >> 2) | ((rgb[2] & 0x40) >> 1) 
+        id |= ((rgb[0] & 0x3F) << 6) | ((rgb[1] & 0x3F) << 12) | ((rgb[2] & 0x3F) << 18)  
+        return id
     
     @staticmethod
     def addMarker(C, pos, parent, name, size, is_relative, quat = [1, 0, 0, 0]):
