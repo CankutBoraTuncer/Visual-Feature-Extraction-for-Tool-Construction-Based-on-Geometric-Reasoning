@@ -15,8 +15,9 @@ if __name__ == "__main__":
     cam_list = ["cam_front", "cam_back", "cam_left", "cam_right", "cam_up", "cam_down"]
     object_name = "hammer_handle"
     C = ry.Config()
-    C.addFile("../src/config/base.g")
+
     C.addFrame(object_name, "world", object_dict[object_name])
+    C.addFile("../src/config/base.g")
     r = rai(C, cam_list, view=True)
     pts = r.get_point_cloud(object_name, 0.5)
     print(pts.shape)
