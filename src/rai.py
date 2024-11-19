@@ -4,10 +4,8 @@ import matplotlib.pyplot as plt
 
 class rai():
 
-    def __init__(self, config_file, cam_list, view=False):
-        self.config_file = config_file
-        self.C = ry.Config()
-        self.C.addFile(config_file)
+    def __init__(self, C, cam_list, view=False):
+        self.C = C
         self.cam_list = cam_list
         self.view = view
         
@@ -45,6 +43,7 @@ class rai():
             
             if(self.view):
                 fig = plt.figure()
+                fig.suptitle(f"Cam Frame: {cam_frame}", fontsize=16)
                 fig.add_subplot(1,3,1)
                 plt.imshow(img)
                 fig.add_subplot(1,3,2)
