@@ -27,4 +27,4 @@ if __name__ == "__main__":
 
         point_cloud = o3d.geometry.PointCloud()
         point_cloud.points = o3d.utility.Vector3dVector(pts)
-        o3d.io.write_point_cloud("../src/point_clouds/" + model_name + "_" + str(filter) + ".ply", point_cloud)
+        o3d.io.write_point_cloud("../src/point_clouds_ref/" + model_name + "_" + str(filter) + ".ply", point_cloud)
