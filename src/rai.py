@@ -13,7 +13,7 @@ class rai():
             self.C.view(True)
     
 
-    def get_point_cloud(self, object_name, filter=1):
+    def get_point_cloud(self, object_name, img_view = False, filter=1):
         pts_w = np.array([])
 
         for cam_frame in self.cam_list:
@@ -42,7 +42,7 @@ class rai():
             pts = self.cam_to_world(pts.reshape(-1, 3), cam)
             pts_w = np.append(pts_w, pts)
             
-            if(self.view):
+            if(img_view):
                 fig = plt.figure()
                 fig.suptitle(f"Cam Frame: {cam_frame}", fontsize=16)
                 fig.add_subplot(1,3,1)
@@ -52,19 +52,29 @@ class rai():
                 fig.add_subplot(1,3,3)
                 plt.imshow(seg)
                 plt.show()
+        
+        camera_positions = np.array([
+            self.C.getFrame("cam_front").getPosition(),
+            self.C.getFrame("cam_back").getPosition(),
+            self.C.getFrame("cam_left").getPosition(),
+            self.C.getFrame("cam_right").getPosition(),
+            self.C.getFrame("cam_up").getPosition(),
+            self.C.getFrame("cam_down").getPosition()
+        ])
 
+        pts_w = pts_w.reshape(-1, 3)
+        mask = ~np.any(np.all(pts_w[:, None, :] == camera_positions[None, :, :], axis=2), axis=1)
+        pts_w_f = pts_w[mask].flatten()
 
         if(self.view):
             C_view = ry.Config()
             C_view.addFrame("world")
-            
-            C_view.getFrame("world").setPointCloud(pts_w, [0,0,0])
+            C_view.getFrame("world").setPointCloud(pts_w_f, [0,0,0])
             C_view.view(True)
 
-        pts_w = np.asarray(pts_w).reshape(-1, 3)
+        pts_w = np.asarray(pts_w_f).reshape(-1, 3)
         row_indices = np.random.choice(pts_w.shape[0], size=int(pts_w.shape[0]*filter), replace=False)
         pts_w = pts_w[row_indices]
-
         return pts_w
 
     @staticmethod

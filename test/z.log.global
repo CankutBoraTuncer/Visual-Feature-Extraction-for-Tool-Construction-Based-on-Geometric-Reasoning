@@ -1,5 +1,5 @@
 ** compiled at:     Nov 16 2024 19:00:08
-** execution start: 2024-11-21 13:46:23:23068
+** execution start: 2024-11-22 14:25:56:714562
 graph.cpp:initParameters:1512(3) opening config file 'rai.cfg'
 graph.cpp:initParameters:1519(3)  - failed
 graph.cpp:initParameters:1525(3) opening base config file '/root/local/rai/../local.cfg'
@@ -58,6 +58,14 @@ util.cpp:getIs:1071(3) opening input file 'base.g'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:cd_file:1042(3) entering path '../src/models' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:getIs:1071(3) opening input file 'hammer_small.stl'
+util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:cd_file:1042(3) entering path '../src/config' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:getIs:1071(3) opening input file 'base.g'
+util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
+util.cpp:cd_file:1042(3) entering path '../src/models' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:getIs:1071(3) opening input file 'spatula_small.stl'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
@@ -84,16 +92,8 @@ util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554
 util.cpp:cd_file:1042(3) entering path '../src/models' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:getIs:1071(3) opening input file 'rake.stl'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:cd_file:1042(3) entering path '../src/config' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:getIs:1071(3) opening input file 'base.g'
-util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:cd_file:1042(3) entering path '../src/models' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-util.cpp:getIs:1071(3) opening input file 'hammer_little.stl'
-util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
-** execution stop: 2024-11-21 13:47:48:232560
-** real time: 85.2095sec
-** CPU time: 141.944
+** execution stop: 2024-11-22 14:27:03:709661
+** real time: 66.9951sec
+** CPU time: 128.377
 
 ** set+queried params:

@@ -1,10 +1,11 @@
 import sys
 sys.path.append('../src')
+import os
 
 from rai import rai
 import robotic as ry
 import open3d as o3d
-import os
+
 
 if __name__ == "__main__":
     cam_list = ["cam_front", "cam_back", "cam_left", "cam_right", "cam_up", "cam_down"]
@@ -23,8 +24,8 @@ if __name__ == "__main__":
         C.addFrame(model_name, "world", args=arg)  
         
         r = rai(C, cam_list, view=False)
-        pts = r.get_point_cloud(model_name, filter)
+        pts = r.get_point_cloud(model_name, filter = filter)
 
         point_cloud = o3d.geometry.PointCloud()
         point_cloud.points = o3d.utility.Vector3dVector(pts)
-        o3d.io.write_point_cloud("../src/point_clouds_ref/" + model_name + "_" + str(filter) + ".ply", point_cloud)
+        o3d.io.write_point_cloud("../src/point_clouds_ref/" + model_name + ".ply", point_cloud)

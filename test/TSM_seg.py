@@ -1,26 +1,55 @@
+import sys
+sys.path.append('../src')
+import os
+
+
 import pyvista as pv
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
-# Load the STL file
-mesh = pv.read("../src/models/hammer_large.stl")
+# Path to models
+model_path = "../src/models"
+model_names = os.listdir(model_path)
 
-# Clean the mesh
-clean_mesh = mesh.clean()
+for model_name in model_names:
+    print("Processing Model:", model_name)
 
-# Extract vertices
-vertices = clean_mesh.points
+    # Load the STL file
+    mesh = pv.read(os.path.join(model_path, model_name))
 
-# Perform K-Means Clustering
-kmeans = KMeans(n_clusters=2, random_state=42)
-labels = kmeans.fit_predict(vertices)
+    # Clean the mesh
+    clean_mesh = mesh.clean()
 
-# Define colors for each cluster
-color_map = {0: "blue", 1: "red"}
-cluster_colors = [color_map[label] for label in labels]
+    # Extract vertices
+    vertices = clean_mesh.points
 
-# Assign cluster labels to the mesh
-clean_mesh["Labels"] = cluster_colors
+    # Normalize vertices for clustering
+    scaler = StandardScaler()
+    vertices_normalized = scaler.fit_transform(vertices)
 
-# Visualize segmented parts
-clean_mesh.plot(scalars="Labels")
+    # Determine the number of clusters dynamically or set it manually
+    n_clusters = 2  # Adjust as needed
+
+    # Perform K-Means Clustering
+    kmeans = KMeans(
+        n_clusters=n_clusters,
+        init="k-means++",
+        n_init=10,
+        max_iter=300,
+        random_state=42
+    )
+
+    # Predict cluster labels
+    labels = kmeans.fit_predict(vertices)
+
+    # Assign numeric labels to the mesh
+    clean_mesh["Labels"] = labels
+
+    # Define color map for visualization
+    color_map = {i: f"Cluster {i}" for i in range(n_clusters)}
+    cluster_colors = [color_map[label] for label in labels]
+
+    # Visualize the segmented model
+    print(f"Cluster Summary: {color_map}")
+    clean_mesh.plot(scalars="Labels")
