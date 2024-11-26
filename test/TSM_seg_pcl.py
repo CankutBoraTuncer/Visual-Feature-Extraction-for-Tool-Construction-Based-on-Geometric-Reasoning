@@ -12,4 +12,5 @@ for model_name in model_names:
     point_cloud = pv.read(point_cloud_path + "/" + model_name)
 
     tps = TPS(verbose = 1)
-    tps.segment_point_cloud(point_cloud)
+    #tps.segment_point_cloud(point_cloud)
+    tps.segment_point_cloud_v2(point_cloud_path + "/" + model_name)
