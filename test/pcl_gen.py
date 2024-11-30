@@ -10,13 +10,13 @@ import open3d as o3d
 if __name__ == "__main__":
     cam_list = ["cam_front", "cam_back", "cam_left", "cam_right", "cam_up", "cam_down"]
     filter = 1
-    model_path = "../src/models"
+    model_path = "../src/models/simple/parts"
     model_names = os.listdir(model_path)
 
     for model_name in model_names:
         model_name = model_name.split(".")[0]
         print("Model name:", model_name)
-        base_arg = "X: [0.0, 0.0, 1, 0.7, 0, 0.7, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../src/models/"
+        base_arg = "X: [0.0, 0.0, 1, 0.7, 0, 0.7, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../src/models/simple/parts/"
         arg = base_arg + model_name + ".stl>,"
 
         C = ry.Config()

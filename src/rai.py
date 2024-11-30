@@ -77,6 +77,54 @@ class rai():
         pts_w = pts_w[row_indices]
         return pts_w
 
+    def get_raw_point_cloud(self, img_view = False, filter=1):
+        pts_w = np.array([])
+
+        for cam_frame in self.cam_list:
+            camera_view = ry.CameraView(self.C)
+            cam = self.C.getFrame(cam_frame)
+            camera_view.setCamera(cam)
+            img, depth = camera_view.computeImageAndDepth(self.C)
+            img = np.asarray(img)
+            depth = np.asarray(depth)
+
+            pts = ry.depthImage2PointCloud(depth, camera_view.getFxycxy())
+            pts = self.cam_to_world(pts.reshape(-1, 3), cam)
+            pts_w = np.append(pts_w, pts)
+            
+            if(img_view):
+                fig = plt.figure()
+                fig.suptitle(f"Cam Frame: {cam_frame}", fontsize=16)
+                fig.add_subplot(1,2,1)
+                plt.imshow(img)
+                fig.add_subplot(1,2,2)
+                plt.imshow(depth)
+                plt.show()
+        
+        camera_positions = np.array([
+            self.C.getFrame("cam_front").getPosition(),
+            self.C.getFrame("cam_back").getPosition(),
+            self.C.getFrame("cam_left").getPosition(),
+            self.C.getFrame("cam_right").getPosition(),
+            self.C.getFrame("cam_up").getPosition(),
+            self.C.getFrame("cam_down").getPosition()
+        ])
+
+        pts_w = pts_w.reshape(-1, 3)
+        mask = ~np.any(np.all(pts_w[:, None, :] == camera_positions[None, :, :], axis=2), axis=1)
+        pts_w_f = pts_w[mask].flatten()
+
+        if(self.view):
+            C_view = ry.Config()
+            C_view.addFrame("world")
+            C_view.getFrame("world").setPointCloud(pts_w_f, [0,0,0])
+            C_view.view(True)
+
+        pts_w = np.asarray(pts_w_f).reshape(-1, 3)
+        row_indices = np.random.choice(pts_w.shape[0], size=int(pts_w.shape[0]*filter), replace=False)
+        pts_w = pts_w[row_indices]
+        return pts_w, img, depth
+    
     @staticmethod
     def cam_to_world(pts, cam_frame):
         t = cam_frame.getPosition() 
