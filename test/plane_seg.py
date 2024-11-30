@@ -4,8 +4,7 @@ import os
 
 from rai import rai
 import robotic as ry
-import open3d as o3d
-import numpy as np
+import pyvista as pv
 from SEG import SEG
 
 if __name__ == "__main__":
@@ -37,8 +36,7 @@ if __name__ == "__main__":
 
         r = rai(C, cam_list, view=False)
         pcl, _, _ = r.get_raw_point_cloud(img_view=False, filter = filter)
-
         tps = SEG(verbose = 1)
         pcl_filtered = tps.RANSAC_plane(pcl)
-        
-        pcl_cylinder = tps.RANSAC_cylinder(pcl_filtered, color=[255, 0, 0])
+        tps.segment_objects(pv.PolyData(pcl_filtered))
+        #pcl_cylinder = tps.RANSAC_cylinder(pcl_filtered, color=[255, 0, 0])

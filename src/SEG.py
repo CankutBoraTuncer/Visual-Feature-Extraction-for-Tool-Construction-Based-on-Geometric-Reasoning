@@ -2,9 +2,9 @@ from sklearn.cluster import KMeans
 import open3d as o3d
 import numpy as np
 import robotic as ry
+from sklearn.cluster import DBSCAN
 
 class SEG():
-
     def __init__(self, verbose=0):
         self.verbose = verbose
 
@@ -24,9 +24,7 @@ class SEG():
         )
 
         labels = kmeans.fit_predict(vertices)
-        color_map = {0: "part 0", 1: "part 1"}
-        cluster_colors = [color_map[label] for label in labels]
-        point_cloud["Labels"] = cluster_colors
+        point_cloud["Labels"] = labels
 
         if(self.verbose > 0):
             point_cloud.plot(scalars="Labels", cmap="tab10")
@@ -34,6 +32,29 @@ class SEG():
         if(is_save):
             point_cloud.save(save_path)
             print("Point cloud saved to:", save_path)
+
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
+    def segment_objects(self, point_cloud, eps=0.02, min_samples=10, is_save=False, save_path=None):
+        vertices = np.array(point_cloud.points)
+
+        dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+        labels = dbscan.fit_predict(vertices)
+
+        point_cloud["Labels"] = labels
+
+        if self.verbose > 0:
+            print(f"Number of clusters (excluding noise): {len(set(labels)) - (1 if -1 in labels else 0)}")
+            print(f"Number of noise points: {np.sum(labels == -1)}")
+            point_cloud.plot(scalars="Labels", cmap="tab10")
+
+        if is_save:
+            point_cloud.save(save_path)
+            print("Point cloud saved to:", save_path)
+
+        return point_cloud
 
     # ---------------------------------------------------------------------------------------# 
     # ---------------------------------------------------------------------------------------#
