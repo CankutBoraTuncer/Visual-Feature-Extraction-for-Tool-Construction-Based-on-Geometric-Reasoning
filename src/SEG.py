@@ -1,8 +1,9 @@
 from sklearn.cluster import KMeans
 import open3d as o3d
 import numpy as np
+import robotic as ry
 
-class TPS():
+class SEG():
 
     def __init__(self, verbose=0):
         self.verbose = verbose
@@ -151,3 +152,60 @@ class TPS():
         if(is_save):
             clean_mesh.save(save_path)
             print("Mesh saved to:", save_path)
+
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
+    def RANSAC_plane(self, pcl, iteration=20, dist_th=0.01):
+        H_best = None
+        inliers_best = []
+        distance_threshold = dist_th
+
+        for c in range(iteration): 
+            print(c)
+            subset_count = 3 
+            if len(inliers_best) >= 8:
+                subset_idx = np.random.choice(inliers_best, int(len(inliers_best) / 2), replace=False)
+            else:
+                subset_idx = np.random.choice(len(pcl), subset_count, replace=False)
+            
+            subset = pcl[subset_idx]
+            
+            p1, p2, p3 = subset[0], subset[1], subset[2]
+            v1 = p2 - p1
+            v2 = p3 - p1
+            normal = np.cross(v1, v2)
+            normal = normal / np.linalg.norm(normal)
+            
+            a, b, c = normal
+            d = -np.dot(normal, p1)
+
+            inliers = []
+            for i in range(len(pcl)):
+                x, y, z = pcl[i]
+                distance = abs(a * x + b * y + c * z + d) / np.sqrt(a**2 + b**2 + c**2)
+                if distance < distance_threshold:
+                    inliers.append(i)
+
+            if len(inliers) > len(inliers_best):
+                inliers_best = inliers
+                H_best = (a, b, c, d)
+
+
+
+        inliers_set = set(inliers_best)
+        pcl_idx = [i for i in range(len(pcl)) if i not in inliers_set]
+
+        pcl_filtered = pcl[pcl_idx]
+        pcl_filtered = np.asarray(pcl_filtered)
+
+        if self.verbose > 0:
+            print("Number of Inliers:", len(inliers_best))
+            print("Best Plane Coefficients: a, b, c, d =", H_best)
+            C_view = ry.Config()
+            C_view.addFrame("world")
+            C_view.getFrame("world").setPointCloud(pcl_filtered.flatten(), [0,0,0])
+            C_view.view(True)
+        
+        return pcl_filtered
