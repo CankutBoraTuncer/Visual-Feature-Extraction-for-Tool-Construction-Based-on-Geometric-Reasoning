@@ -192,8 +192,6 @@ class SEG():
                 inliers_best = inliers
                 H_best = (a, b, c, d)
 
-
-
         inliers_set = set(inliers_best)
         pcl_idx = [i for i in range(len(pcl)) if i not in inliers_set]
 
@@ -208,4 +206,45 @@ class SEG():
             C_view.getFrame("world").setPointCloud(pcl_filtered.flatten(), [0,0,0])
             C_view.view(True)
         
+        return pcl_filtered
+    
+    def RANSAC_cylinder(self, pcl, iteration=20, dist_th=0.01, color = [0,0,0]):
+        H_best = None
+        inliers_best = []
+        distance_threshold = dist_th
+
+        for _ in range(iteration):
+            subset_count = 2
+            subset_idx = np.random.choice(len(pcl), subset_count, replace=False)
+            subset = pcl[subset_idx]
+
+            p1, p2 = subset[0], subset[1]
+            axis = p2 - p1
+            axis = axis / np.linalg.norm(axis)  
+
+            inliers = []
+            for i in range(len(pcl)):
+                point = pcl[i] - p1
+                projection = np.dot(point, axis) * axis
+                radius_vector = point - projection
+                radius = np.linalg.norm(radius_vector)
+
+                if abs(radius - dist_th) < distance_threshold:
+                    inliers.append(i)
+
+            if len(inliers) > len(inliers_best):
+                inliers_best = inliers
+                H_best = (p1, axis, dist_th)
+
+        pcl_filtered = pcl[inliers_best]
+        pcl_filtered = np.asarray(pcl_filtered)
+
+        if self.verbose > 0:
+            print("Number of Inliers:", len(inliers_best))
+            print("Best Cylinder Parameters: (Point on Axis, Axis Direction, Radius) =", H_best)
+            C_view = ry.Config()
+            C_view.addFrame("world")
+            C_view.getFrame("world").setPointCloud(pcl_filtered.flatten(), color)
+            C_view.view(True)
+            
         return pcl_filtered
