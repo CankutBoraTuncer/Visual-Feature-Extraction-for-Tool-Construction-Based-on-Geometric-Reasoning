@@ -2,8 +2,10 @@ from sklearn.cluster import KMeans
 import open3d as o3d
 import numpy as np
 import robotic as ry
+from sklearn.neighbors import KDTree
 from sklearn.cluster import DBSCAN
 
+import pyvista as pv
 class SEG():
     def __init__(self, verbose=0):
         self.verbose = verbose
@@ -55,6 +57,57 @@ class SEG():
             print("Point cloud saved to:", save_path)
 
         return point_cloud
+
+
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
+    def _DBSCAN(self, point_cloud, rad=0.02, min_pts=10):
+        vis_p = set()
+        clusters = []
+
+        tree = KDTree(point_cloud)
+
+        for i in range(len(point_cloud)):
+            if i in vis_p:
+                continue
+
+            vis_p.add(i)
+            neighbors = tree.query_radius([point_cloud[i]], r=rad)[0]
+
+            if len(neighbors) < min_pts:
+                continue 
+
+            cluster = set()
+            cluster.add(i)
+
+            queue = list(neighbors)
+            while queue:
+                current_idx = queue.pop(0)
+
+                if current_idx not in vis_p:
+                    vis_p.add(current_idx)
+                    current_neighbors = tree.query_radius([point_cloud[current_idx]], r=rad)[0]
+                    if len(current_neighbors) >= min_pts:
+                        queue.extend([n for n in current_neighbors if n not in vis_p])
+
+                cluster.add(current_idx)
+            clusters.append(list(cluster))
+
+        if self.verbose > 0:
+            labels = -1 * np.ones(len(point_cloud), dtype=int)
+            for cluster_id, cluster_indices in enumerate(clusters):
+                for index in cluster_indices:
+                    labels[index] = cluster_id
+            cloud_pv = pv.PolyData(point_cloud)
+            cloud_pv['Labels'] = labels
+            cloud_pv.plot(scalars='Labels', cmap='tab10', point_size=5, render_points_as_spheres=True)
+
+        return clusters
+
+                        
+
 
     # ---------------------------------------------------------------------------------------# 
     # ---------------------------------------------------------------------------------------#
@@ -227,45 +280,4 @@ class SEG():
             C_view.getFrame("world").setPointCloud(pcl_filtered.flatten(), [0,0,0])
             C_view.view(True)
         
-        return pcl_filtered
-    
-    def RANSAC_cylinder(self, pcl, iteration=20, dist_th=0.01, color = [0,0,0]):
-        H_best = None
-        inliers_best = []
-        distance_threshold = dist_th
-
-        for _ in range(iteration):
-            subset_count = 2
-            subset_idx = np.random.choice(len(pcl), subset_count, replace=False)
-            subset = pcl[subset_idx]
-
-            p1, p2 = subset[0], subset[1]
-            axis = p2 - p1
-            axis = axis / np.linalg.norm(axis)  
-
-            inliers = []
-            for i in range(len(pcl)):
-                point = pcl[i] - p1
-                projection = np.dot(point, axis) * axis
-                radius_vector = point - projection
-                radius = np.linalg.norm(radius_vector)
-
-                if abs(radius - dist_th) < distance_threshold:
-                    inliers.append(i)
-
-            if len(inliers) > len(inliers_best):
-                inliers_best = inliers
-                H_best = (p1, axis, dist_th)
-
-        pcl_filtered = pcl[inliers_best]
-        pcl_filtered = np.asarray(pcl_filtered)
-
-        if self.verbose > 0:
-            print("Number of Inliers:", len(inliers_best))
-            print("Best Cylinder Parameters: (Point on Axis, Axis Direction, Radius) =", H_best)
-            C_view = ry.Config()
-            C_view.addFrame("world")
-            C_view.getFrame("world").setPointCloud(pcl_filtered.flatten(), color)
-            C_view.view(True)
-            
         return pcl_filtered

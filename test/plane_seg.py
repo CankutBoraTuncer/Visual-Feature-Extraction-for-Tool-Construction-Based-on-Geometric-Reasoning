@@ -39,4 +39,4 @@ if __name__ == "__main__":
         tps = SEG(verbose = 1)
         pcl_filtered = tps.RANSAC_plane(pcl)
         tps.segment_objects(pv.PolyData(pcl_filtered))
-        #pcl_cylinder = tps.RANSAC_cylinder(pcl_filtered, color=[255, 0, 0])
+
