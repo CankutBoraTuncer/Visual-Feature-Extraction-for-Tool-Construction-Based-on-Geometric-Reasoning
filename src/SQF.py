@@ -5,26 +5,65 @@ import numpy as np
 from sklearn.decomposition import PCA
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import minimize, Bounds
+import copy
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+def visualize(obj, window_name='Open3D'):
+    vis = o3d.visualization.Visualizer()
+    vis.create_window(window_name=window_name, width=800, height=600)
+    vis.add_geometry(obj)
+    vis.run()
+    vis.destroy_window()
+
+def normalize_point_cloud(pcd):
+    points = np.asarray(pcd.points)
+    center = points.mean(axis=0)
+    points -= center
+    max_abs_value = np.max(np.abs(points))
+    points /= max_abs_value
+    pcd.points = o3d.utility.Vector3dVector(points)
+    return pcd
+
+def set_axes_equal(ax):
+    """
+    Set 3D plot axes to equal scale.
+
+    This ensures the visual proportions of the plot match the actual data.
+    """
+    limits = np.array([
+        ax.get_xlim3d(),
+        ax.get_ylim3d(),
+        ax.get_zlim3d()
+    ])
+    ranges = np.abs(limits[:, 1] - limits[:, 0])
+    max_range = ranges.max()
+
+    # Center the axes around their midpoints
+    midpoints = np.mean(limits, axis=1)
+    ax.set_xlim3d([midpoints[0] - max_range / 2, midpoints[0] + max_range / 2])
+    ax.set_ylim3d([midpoints[1] - max_range / 2, midpoints[1] + max_range / 2])
+    ax.set_zlim3d([midpoints[2] - max_range / 2, midpoints[2] + max_range / 2])
+
+
+
 def SQ_fitting_params(point_cloud, SQ_type):
     """
     General superquadric fitting to tool parts with constraints and visualization.
-    
+
     Args:
         point_cloud: Input point cloud (Nx3 array).
         SQ_type: List of superquadric types to fit.
-    
+
     Returns:
         fit_params: Optimized parameters of the superquadric.
         fit_type: Type of best-fit superquadric.
         SQ: Point cloud representation of the fitted superquadric.
         residue_SQ: Residual error of the fit.
     """
-    segment_members = point_cloud  # Assume point cloud is provided as Nx3 numpy array
-    segment_members_original = segment_members.copy()
+    segment_members = copy.deepcopy(point_cloud)  # Assume point cloud is provided as Nx3 numpy array
+    segment_members_original = copy.deepcopy(segment_members)
     residue_SQ = float('inf')
 
     # Perform PCA and obtain the inverse transformation
@@ -47,7 +86,7 @@ def SQ_fitting_params(point_cloud, SQ_type):
             -np.pi, -np.pi, -np.pi, bound_min[0], bound_min[1], bound_min[2]
         ]
         upper_bounds = [
-            1.2 * scale[0], 1.2 * scale[1], 1.2 * scale[2], 1.0, 2.0, 2.0,
+            1.2 * scale[0], 1.2 * scale[1], 1.2 * scale[2], 1.2 * scale[3], 2.0, 2.0,
             np.pi, np.pi, np.pi, bound_max[0], bound_max[1], bound_max[2]
         ]
         bounds = Bounds(lower_bounds, upper_bounds)
@@ -58,7 +97,16 @@ def SQ_fitting_params(point_cloud, SQ_type):
             orientations[0], orientations[1], orientations[2],
             p[0], p[1], p[2]
         ])
-        
+
+
+        x_init = [float(x) for x in x_init]
+        x_init[4:] = [x + 1e-6 if abs(x) < 1e-6 else x for x in x_init[4:]]
+
+        for i, (x, lb, ub) in enumerate(zip(x_init, lower_bounds, upper_bounds)):
+            if not (lb <= x <= ub):
+                print(f"Parameter {i} out of bounds: {x} not in [{lb}, {ub}]")
+
+
         print(f"x_init: {x_init}")
         print(f"lowe_bound: {lower_bounds}")
         print(f"upper_bounds: {upper_bounds}")
@@ -74,7 +122,7 @@ def SQ_fitting_params(point_cloud, SQ_type):
             x0=x_init,
             bounds=bounds,
             method='SLSQP',
-            options={'disp': True, 'maxiter': 5000, 'ftol': 1e-8,'xtol': 1e-8, 'gtol': 1e-8}
+            options={'disp': True, 'maxiter': 5000, 'ftol': 1e-8}
         )
 
         # Check optimization success
@@ -93,12 +141,13 @@ def SQ_fitting_params(point_cloud, SQ_type):
         # Calculate the residual
         pcl_SQ_dist, SQ_pcl_dist = pcl_dist(segment_members_original, SQ)
         residue = pcl_SQ_dist + SQ_pcl_dist
-        print(f"residue is for type {SQ_type} is {residue}")
+        print(f"residue is for type {sq_type} is {residue}")
 
         if residue < residue_SQ:
             SQ_optimum = optimum_quadrics
             residue_SQ = residue
             optimum_type = sq_type
+
 
     # Generate the final superquadric point cloud
     print(f"SQ_optimum: {SQ_optimum}")
@@ -109,34 +158,40 @@ def SQ_fitting_params(point_cloud, SQ_type):
 
     print("mean of the point cloud: ", np.mean(SQ, axis=0))
 
-    # Extract parameters for the best-fit superquadric
-    scale, orientations, eps, p, _, _ = param_init(SQ, optimum_type)
+
+    # fit_params = copy.deepcopy(SQ_optimum)
+    # # Extract parameters for the best-fit superquadric
+    # scale, orientations, eps, p, _, _ = param_init(SQ, optimum_type)
 
     if optimum_type == 2:  # Toroid
-        fit_params = np.zeros(12)
-        fit_params[:4] = scale
-        fit_params[4:6] = eps
-        fit_params[6:9] = orientations
-        fit_params[9:12] = p
+        fit_params = copy.deepcopy(SQ_optimum)
+        # fit_params = np.zeros(12)
+        # fit_params[:4] = scale
+        # fit_params[4:6] = eps
+        # fit_params[6:9] = orientations
+        # fit_params[9:12] = p
     else:
         fit_params = np.zeros(11)
-        fit_params[:3] = scale[:3]
-        fit_params[3:5] = eps
-        fit_params[5:8] = orientations
-        fit_params[8:11] = p
+        fit_params[:3] = SQ_optimum[:3]
+        fit_params[3:5] = SQ_optimum[4:6]
+        fit_params[5:8] = SQ_optimum[6:9]
+        fit_params[8:11] = SQ_optimum[9:12]
 
     fit_type = optimum_type
 
    # Combined plot: original point cloud and fitted superquadric
+
+    # rotate around x  and y axis 90 degree
+
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
-
+    print(f"Number of points in the point cloud: {len(segment_members_original)}")
     # Plot original point cloud
     ax.scatter(
         segment_members_original[:, 0],
         segment_members_original[:, 1],
         segment_members_original[:, 2],
-        s=1,
+        s=3,
         label="Original Point Cloud",
         alpha=0.6,
         c="blue"
@@ -147,7 +202,7 @@ def SQ_fitting_params(point_cloud, SQ_type):
         SQ[:, 0],
         SQ[:, 1],
         SQ[:, 2],
-        s=1,
+        s=3,
         label="Fitted Superquadric",
         alpha=0.6,
         c="red"
@@ -159,9 +214,18 @@ def SQ_fitting_params(point_cloud, SQ_type):
     ax.set_ylabel("Y-axis")
     ax.set_zlabel("Z-axis")
     ax.legend()
-
+    set_axes_equal(ax)
     # Show the plot
     plt.show()
+
+    # points_original = SQ[:, :3]  # Ensure the correct slicing
+    # temp = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(points_original))
+    # # visualize(temp, "fitted superquadric")
+    # points_original = segment_members_original[:, :3]  # Ensure the correct slicing
+    # temp2 = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(points_original))
+    # visualize_3d_open3d(temp2, temp)
+    # visualize(temp2, "original point cloud")
+
 
     # # read point cloud from .ply file and display with calculated superquadric
     # matlab_pcd = o3d.io.read_point_cloud("/Users/hsimsir/Documents/MATLAB/fitted_superquadric.ply")
@@ -224,7 +288,7 @@ def pca_segment(pcl):
     # Perform PCA
     pca = PCA(n_components=3)  # We expect a 3D point cloud
     pca.fit(segments)          # Fit PCA to the data
-    
+
     # Transformation matrix (principal components)
     pca_segments = pca.components_.T  # PCA components as columns
 
@@ -239,11 +303,11 @@ def pca_segment(pcl):
 def param_init(segment, sq_type):
     """
     Initialize parameters for the superquadric fitting.
-    
+
     Args:
         segment (numpy.ndarray): Nx3 array of 3D points belonging to a segment of the original point cloud.
         sq_type (int): Type of the superquadric (e.g., 2 for toroids, others for general superquadrics).
-    
+
     Returns:
         scale (numpy.ndarray): Scale parameters (size along principal axes).
         orientations (numpy.ndarray): Orientation angles (Euler angles).
@@ -254,41 +318,99 @@ def param_init(segment, sq_type):
     """
     scale = np.zeros(4)
     segment_members = segment
-    
+
     # Perform PCA on the segment
     pca = PCA(n_components=3)
     pca.fit(segment_members)
     rotation_matrix = pca.components_
     orientations = R.from_matrix(rotation_matrix).as_euler('xyz', degrees=False)
-    
+
     # Find bounding boxes
     minimum = np.min(segment_members, axis=0)
     maximum = np.max(segment_members, axis=0)
-    
+
     bound_min = minimum
     bound_max = maximum
-    
+
     # Compute scale and ensure no dimension is zero
     pcl_scale = np.abs(maximum - minimum)
     pcl_scale = np.where(pcl_scale == 0, pcl_scale + 0.000005, pcl_scale)
-    
+
     eps = [0.1, 1.0]  # Fixed epsilon values for superellipsoid = cylinder
-    
+
     # Adjust scales and orientations if conditions are met
     if sq_type != 3 and pcl_scale[2] > 0.25 * pcl_scale[1]:
         z_scale = pcl_scale[0]
         pcl_scale[0] = pcl_scale[2]
         pcl_scale[2] = z_scale
         orientations[1] += np.pi / 2  # Adjust pitch
-    
+
     scale[:3] = pcl_scale / 2  # Divide by 2 as scale represents radius/half-extent
-    
+
     if sq_type == 2:  # For toroids
         scale[3] = 0.02  # Additional scale parameter for toroids
-    
+
     # Compute the mean position
     p = np.mean(segment_members, axis=0)
-    
+
+    return scale, orientations, eps, p, bound_min, bound_max
+
+
+iteration_count = 0  # Global variable to track iteration count
+
+def param_init(segment, sq_type):
+    """
+    Initialize parameters for the superquadric fitting.
+
+    Args:
+        segment (numpy.ndarray): Nx3 array of 3D points belonging to a segment of the original point cloud.
+        sq_type (int): Type of the superquadric (e.g., 2 for toroids, others for general superquadrics).
+
+    Returns:
+        scale (numpy.ndarray): Scale parameters (size along principal axes).
+        orientations (numpy.ndarray): Orientation angles (Euler angles).
+        eps (list): Exponential factors for the superquadric.
+        p (numpy.ndarray): Mean position of the segment.
+        bound_min (numpy.ndarray): Minimum bounds of the segment.
+        bound_max (numpy.ndarray): Maximum bounds of the segment.
+    """
+    scale = np.zeros(4)
+    segment_members = segment
+
+    # Perform PCA on the segment
+    pca = PCA(n_components=3)
+    pca.fit(segment_members)
+    rotation_matrix = pca.components_
+    orientations = R.from_matrix(rotation_matrix).as_euler('xyz', degrees=False)
+
+    # Find bounding boxes
+    minimum = np.min(segment_members, axis=0)
+    maximum = np.max(segment_members, axis=0)
+
+    bound_min = minimum
+    bound_max = maximum
+
+    # Compute scale and ensure no dimension is zero
+    pcl_scale = np.abs(maximum - minimum)
+    pcl_scale = np.where(pcl_scale == 0, pcl_scale + 0.000005, pcl_scale)
+
+    eps = [0.1, 1.0]  # Fixed epsilon values for superellipsoid = cylinder
+
+    # Adjust scales and orientations if conditions are met
+    if sq_type != 3 and pcl_scale[2] > 0.25 * pcl_scale[1]:
+        z_scale = pcl_scale[0]
+        pcl_scale[0] = pcl_scale[2]
+        pcl_scale[2] = z_scale
+        orientations[1] += np.pi / 2  # Adjust pitch
+
+    scale[:3] = pcl_scale / 2  # Divide by 2 as scale represents radius/half-extent
+
+    if sq_type == 2:  # For toroids
+        scale[3] = 0.02  # Additional scale parameter for toroids
+
+    # Compute the mean position
+    p = np.mean(segment_members, axis=0)
+
     return scale, orientations, eps, p, bound_min, bound_max
 
 
@@ -350,21 +472,29 @@ def fitting_fn(opt_params, current_segment, SQ_type):
     Y = np.abs(Y) / a2
     Z = np.abs(Z) / a3
 
+    X1 = np.abs(X ** (2 / eps2))
+    Y1 = np.abs(Y ** (2 / eps2))
+    Z1 = np.abs(Z ** (2 / eps1))
     # Inside-outside function based on SQ_type
     if SQ_type in [0, 1]:
-        quadric_func = (X ** (2 / eps2) + Y ** (2 / eps2)) ** (eps2 / eps1) + Z ** (2 / eps1)
+        quadric_func = (X1 + Y1) ** (eps2 / eps1) + Z1
     elif SQ_type == 2:
-        quadric_func = ((X ** (2 / eps2) + Y ** (2 / eps2)) ** (eps2 / 2) - a4) ** (2 / eps1) + Z ** (2 / eps1)
+        quadric_func = np.abs(((X1 + Y1) ** (eps2 / 2) - a4)) ** (2 / eps1) + Z1
     elif SQ_type == 3:
-        quadric_func = ((X ** (2 / eps2) + Y ** (2 / eps2)) ** (eps2 / eps1)) - Z
+        quadric_func = ((X1 + Y1) ** (eps2 / eps1)) - Z
     else:
         raise ValueError("Incorrect SQ_type input")
 
-    # Levenberg-Marquardt cost function
+
+    quadric_func = np.abs(quadric_func)
+
     cost = (a1 * a2 * a3) * (np.abs(quadric_func ** eps1) - 1) ** 2
 
+    cost = np.nan_to_num(cost, nan=0.0)  # Replace NaN with 0.0
+
+
     # Display iteration and cost
-    print(f"Iteration: {iteration_count}, Cost: {np.sum(cost)}")
+    # print(f"Iteration: {iteration_count}, Cost: {np.sum(cost)}")
 
     return cost
 
@@ -465,7 +595,7 @@ def SQ2PCL(params, SQ_type):
         [np.sin(angle_z), np.cos(angle_z), 0],
         [0, 0, 1]
     ])
-    R = Rz @ Ry @ Rx  # Combined rotation matrix
+    R = Rz @ Ry @ Rx # Combined rotation matrix
 
     # Apply rotation
     pcl_SQ = pcl_SQ @ R.T
@@ -482,6 +612,7 @@ def SQ2PCL(params, SQ_type):
     return pcl_SQ
 
 
+import matplotlib.pyplot
 import numpy as np
 
 def pcl_dist(pcl, SQ):
@@ -537,13 +668,13 @@ def read_point_cloud(file_path):
 
 # Simulate SQ fitting (requires the previously defined SQ_fitting_params and helper functions)
 def test_superquadric_fitting(pcd):
-    
+
     # Define a superquadric type for testing
-    SQ_type = [0]  
-    
+    SQ_type = [0,1,2,3]
+
     # Perform superquadric fitting
     fit_params, fit_type, SQ, residue_SQ = SQ_fitting_params(pcd, SQ_type)
-    
+    print(pcd.shape)
     # Output the results
     print("Fitted Parameters:", fit_params)
     print("Fitted Superquadric Type:", fit_type)
@@ -551,15 +682,37 @@ def test_superquadric_fitting(pcd):
 
 def display_pcd(pcd, str):
     print(f"Number of points: {len(pcd.points)}")
-    o3d.visualization.draw_geometries([pcd], window_name=str)
+    visualize(pcd, str)
 
 # Specify the point cloud file path
-file_path = "src/point_clouds_ref/hammer_large.ply"
+
+def normalize_y_axis(pcd):
+    points = np.asarray(pcd.points)
+    y_mean = np.mean(points[:, 1])
+    points[:, 1] -= y_mean
+    pcd.points = o3d.utility.Vector3dVector(points)
+    return pcd
+
+
+file_path = "src/point_clouds_ref/torus (1).ply"
 pcd = o3d.io.read_point_cloud(file_path)
+# pcd = normalize_y_axis(pcd)
+points = np.asarray(pcd.points)
+# points = points[points[:, 1] >= 0.04]
+pca = PCA(n_components=3)
+pca.fit(points)
+rotation_matrix = pca.components_
+orientations = R.from_matrix(rotation_matrix).as_euler('xyz', degrees=False)
+points = points @ rotation_matrix.T  # Apply rotation
+
+
+pcd.points = o3d.utility.Vector3dVector(points)
+normalize_point_cloud(pcd)
+points = np.asarray(pcd.points)
+
 display_pcd(pcd, "initial pcd")
 
-points = np.asarray(pcd.points)
-filtered_points = points[points[:, 1] >= 0.04]
+filtered_points = points #points[points[:, 1] >= 0.04]
 print(f"Filtered point cloud with {filtered_points.shape[0]} points.")
 display_pcd(o3d.geometry.PointCloud(o3d.utility.Vector3dVector(filtered_points)), "filtered pcd")
 
