@@ -2,7 +2,7 @@ import robotic as ry
 import numpy as np
 import matplotlib.pyplot as plt
 
-class rai():
+class RAI():
 
     def __init__(self, C, cam_list, view=False):
         self.C = C
