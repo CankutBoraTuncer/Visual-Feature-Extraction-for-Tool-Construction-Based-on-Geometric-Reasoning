@@ -5,6 +5,7 @@ import robotic as ry
 from sklearn.neighbors import KDTree
 from sklearn.cluster import DBSCAN
 import pyvista as pv
+from RAI import RAI
 
 class SEG():
     def __init__(self, verbose=0):
@@ -39,7 +40,7 @@ class SEG():
     # ---------------------------------------------------------------------------------------#
     # ---------------------------------------------------------------------------------------#
 
-    def segment_objects(self, point_cloud, eps=0.02, min_samples=10, is_save=False, save_path=None):
+    def segment_objects(self, point_cloud, scene, eps=0.02, min_samples=10, is_save=False, save_path=None):
         vertices = np.array(point_cloud.points)
 
         dbscan = DBSCAN(eps=eps, min_samples=min_samples)
@@ -66,7 +67,8 @@ class SEG():
 
             new_cloud = o3d.geometry.PointCloud()
             new_cloud.points = o3d.utility.Vector3dVector(segment_points)
-            segments[lbl] = new_cloud
+
+            segments[RAI.point2obj(scene, segment_points)] = new_cloud
 
         return segments
 

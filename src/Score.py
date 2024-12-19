@@ -2,11 +2,10 @@ import itertools
 import numpy as np
 
 class Score():
-    def __init__(self, reference_params, candidate_params, candidate_objects, verbose=0):
+    def __init__(self, reference_params, candidate_params, verbose=0):
         self.reference_params = reference_params
         self.candidate_params = candidate_params
         self.verbose = verbose
-        self.candidate_objects = candidate_objects
 
     def calculate_action_score(self, ref_arrays, cand_arrays):
         score = 0

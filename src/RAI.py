@@ -168,7 +168,16 @@ class RAI():
                 pointcloud_dict[base_name] = pcd
         
         return pointcloud_dict   
-
+    
+    @staticmethod
+    def point2obj(scene, pts):
+        objects = scene.getFrameNames()
+        for obj in objects:
+            if "obj" in obj:
+                for p in pts:
+                    if np.linalg.norm(scene.getFrame(obj).getPosition() - p) < 0.1:
+                        return obj
+        return ""
 
     @staticmethod
     def view_point_cloud(pts, is_flat = False):
@@ -189,7 +198,6 @@ class RAI():
         points_world_frame_homogeneous = np.dot(transformation_matrix, points_camera_frame_homogeneous.T).T
         points_world_frame = points_world_frame_homogeneous[:, :3]
         return points_world_frame
-
 
     @staticmethod
     def id2color(id):
