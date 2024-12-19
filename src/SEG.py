@@ -4,8 +4,8 @@ import numpy as np
 import robotic as ry
 from sklearn.neighbors import KDTree
 from sklearn.cluster import DBSCAN
-
 import pyvista as pv
+
 class SEG():
     def __init__(self, verbose=0):
         self.verbose = verbose
@@ -56,7 +56,19 @@ class SEG():
             point_cloud.save(save_path)
             print("Point cloud saved to:", save_path)
 
-        return point_cloud
+        segments = {}
+        unique_labels = np.unique(labels)
+        unique_labels = unique_labels[unique_labels != -1]
+
+        for lbl in unique_labels:
+            mask = (labels == lbl)
+            segment_points = vertices[mask]
+
+            new_cloud = o3d.geometry.PointCloud()
+            new_cloud.points = o3d.utility.Vector3dVector(segment_points)
+            segments[lbl] = new_cloud
+
+        return segments
 
 
     # ---------------------------------------------------------------------------------------# 
@@ -235,7 +247,6 @@ class SEG():
         distance_threshold = dist_th
 
         for c in range(iteration): 
-            print(c)
             subset_count = 3 
             if len(inliers_best) >= 8:
                 subset_idx = np.random.choice(inliers_best, int(len(inliers_best) / 2), replace=False)
@@ -278,4 +289,4 @@ class SEG():
             C_view.getFrame("world").setPointCloud(pcl_filtered.flatten(), [0,0,0])
             C_view.view(True)
         
-        return pcl_filtered
+        return pv.PolyData(pcl_filtered)

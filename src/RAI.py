@@ -1,31 +1,63 @@
 import robotic as ry
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import open3d as o3d
 
 class RAI():
 
-    def __init__(self, C, cam_list, view=False):
-        self.C = C
-        self.cam_list = cam_list
-        self.view = view
+    def __init__(self, verbose=0):
+        self.verbose = verbose
         
-        if(view):
-            self.C.view(True)
-    
+    def generate_ref_point_cloud(self, model_path, cam_list, filter = 1, target_path = "", object_name=""):
+        model_names = os.listdir(model_path)
+        obj_c = 0
+        ptc_arr = {}
+        for model_name in model_names:
+            model_name = model_name.split(".")[0]
 
-    def get_point_cloud(self, object_name, img_view = False, filter=1):
+            if object_name != "" and object_name not in model_name:
+                continue
+
+            if object_name != "" and object_name in model_name:
+                obj_c+=1
+            
+            if obj_c > 2: 
+                return ptc_arr
+
+            print("Model name:", model_name)
+            base_arg = "X: [0.0, 0.0, 0.2, 0.7, 0, 0.7, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <"+model_path+"/"
+            arg = base_arg + model_name + ".stl>,"
+            
+            C = ry.Config()
+            C.addFile("../src/config/base.g")
+            C.addFrame(model_name, "world", args=arg)  
+
+            pts = self.get_point_cloud(C, cam_list, model_name, filter = filter)
+
+            point_cloud = o3d.geometry.PointCloud()
+            point_cloud.points = o3d.utility.Vector3dVector(pts)
+
+            if target_path != "":
+                o3d.io.write_point_cloud(target_path + model_name + ".ply", point_cloud)
+
+            ptc_arr[model_name] = point_cloud
+
+        return ptc_arr
+    
+    def get_point_cloud(self, C, cam_list, object_name, filter=1):
         pts_w = np.array([])
 
-        for cam_frame in self.cam_list:
-            camera_view = ry.CameraView(self.C)
-            cam = self.C.getFrame(cam_frame)
+        for cam_frame in cam_list:
+            camera_view = ry.CameraView(C)
+            cam = C.getFrame(cam_frame)
             camera_view.setCamera(cam)
-            img, depth = camera_view.computeImageAndDepth(self.C)
+            img, depth = camera_view.computeImageAndDepth(C)
             img = np.asarray(img)
             depth = np.asarray(depth)
             seg = camera_view.computeSegmentationImage()
 
-            filter_id = int(self.C.getFrame(object_name).info()["ID"])
+            filter_id = int(C.getFrame(object_name).info()["ID"])
             filter_color = self.id2color(filter_id)
 
             masked_img = img.copy()
@@ -42,7 +74,7 @@ class RAI():
             pts = self.cam_to_world(pts.reshape(-1, 3), cam)
             pts_w = np.append(pts_w, pts)
             
-            if(img_view):
+            if(self.verbose > 1):
                 fig = plt.figure()
                 fig.suptitle(f"Cam Frame: {cam_frame}", fontsize=16)
                 fig.add_subplot(1,3,1)
@@ -54,19 +86,19 @@ class RAI():
                 plt.show()
         
         camera_positions = np.array([
-            self.C.getFrame("cam_front").getPosition(),
-            self.C.getFrame("cam_back").getPosition(),
-            self.C.getFrame("cam_left").getPosition(),
-            self.C.getFrame("cam_right").getPosition(),
-            self.C.getFrame("cam_up").getPosition(),
-            self.C.getFrame("cam_down").getPosition()
+            C.getFrame("cam_front").getPosition(),
+            C.getFrame("cam_back").getPosition(),
+            C.getFrame("cam_left").getPosition(),
+            C.getFrame("cam_right").getPosition(),
+            C.getFrame("cam_up").getPosition(),
+            C.getFrame("cam_down").getPosition()
         ])
 
         pts_w = pts_w.reshape(-1, 3)
         mask = ~np.any(np.all(pts_w[:, None, :] == camera_positions[None, :, :], axis=2), axis=1)
         pts_w_f = pts_w[mask].flatten()
 
-        if(self.view):
+        if(self.verbose>1):
             C_view = ry.Config()
             C_view.addFrame("world")
             C_view.getFrame("world").setPointCloud(pts_w_f, [0,0,0])
@@ -77,14 +109,14 @@ class RAI():
         pts_w = pts_w[row_indices]
         return pts_w
 
-    def get_raw_point_cloud(self, img_view = False, filter=1):
+    def get_raw_point_cloud(self, C, cam_list, filter=1):
         pts_w = np.array([])
 
-        for cam_frame in self.cam_list:
-            camera_view = ry.CameraView(self.C)
-            cam = self.C.getFrame(cam_frame)
+        for cam_frame in cam_list:
+            camera_view = ry.CameraView(C)
+            cam = C.getFrame(cam_frame)
             camera_view.setCamera(cam)
-            img, depth = camera_view.computeImageAndDepth(self.C)
+            img, depth = camera_view.computeImageAndDepth(C)
             img = np.asarray(img)
             depth = np.asarray(depth)
 
@@ -92,7 +124,7 @@ class RAI():
             pts = self.cam_to_world(pts.reshape(-1, 3), cam)
             pts_w = np.append(pts_w, pts)
             
-            if(img_view):
+            if(self.verbose > 1):
                 fig = plt.figure()
                 fig.suptitle(f"Cam Frame: {cam_frame}", fontsize=16)
                 fig.add_subplot(1,2,1)
@@ -102,19 +134,19 @@ class RAI():
                 plt.show()
         
         camera_positions = np.array([
-            self.C.getFrame("cam_front").getPosition(),
-            self.C.getFrame("cam_back").getPosition(),
-            self.C.getFrame("cam_left").getPosition(),
-            self.C.getFrame("cam_right").getPosition(),
-            self.C.getFrame("cam_up").getPosition(),
-            self.C.getFrame("cam_down").getPosition()
+            C.getFrame("cam_front").getPosition(),
+            C.getFrame("cam_back").getPosition(),
+            C.getFrame("cam_left").getPosition(),
+            C.getFrame("cam_right").getPosition(),
+            C.getFrame("cam_up").getPosition(),
+            C.getFrame("cam_down").getPosition()
         ])
 
         pts_w = pts_w.reshape(-1, 3)
         mask = ~np.any(np.all(pts_w[:, None, :] == camera_positions[None, :, :], axis=2), axis=1)
         pts_w_f = pts_w[mask].flatten()
 
-        if(self.view):
+        if(self.verbose>1):
             C_view = ry.Config()
             C_view.addFrame("world")
             C_view.getFrame("world").setPointCloud(pts_w_f, [0,0,0])
@@ -125,6 +157,28 @@ class RAI():
         pts_w = pts_w[row_indices]
         return pts_w, img, depth
     
+    @staticmethod
+    def read_point_cloud_from_folder(pointcloud_folder):
+        pointcloud_dict = {}
+        for filename in os.listdir(pointcloud_folder):
+            if filename.endswith(".ply"):
+                file_path = os.path.join(pointcloud_folder, filename)
+                pcd = o3d.io.read_point_cloud(file_path)
+                base_name = os.path.splitext(filename)[0]
+                pointcloud_dict[base_name] = pcd
+        
+        return pointcloud_dict   
+
+
+    @staticmethod
+    def view_point_cloud(pts, is_flat = False):
+        if not is_flat:
+            pts = pts.flatten()
+        C = ry.Config()
+        C.addFrame("world")
+        C.getFrame("world").setPointCloud(pts, [0,0,0])
+        C.view(True)
+
     @staticmethod
     def cam_to_world(pts, cam_frame):
         t = cam_frame.getPosition() 

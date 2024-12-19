@@ -40,4 +40,3 @@ if __name__ == "__main__":
     tps = SEG(verbose = 1)
     pcl_filtered = tps.RANSAC_plane(pcl)
     tps.segment_objects(pv.PolyData(pcl_filtered))
-
