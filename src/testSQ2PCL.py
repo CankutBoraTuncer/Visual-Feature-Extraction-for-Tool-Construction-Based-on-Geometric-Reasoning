@@ -1,116 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-def SQ2PCL(params, SQ_type):
-    """
-    Function to generate the superquadric as a point cloud.
+import SQF
 
-    Args:
-        params (list or np.ndarray): Optimized parameters for the superquadric.
-        SQ_type (int): Type of the superquadric (0: superellipsoid, 1: hyperboloid, 2: toroid, 3: paraboloid).
-
-    Returns:
-        np.ndarray: Point cloud segments corresponding to the superquadric.
-    """
-    n = 50  # Number of points in the superquadric point cloud
-
-    # Extract parameters
-    a1 = params[0]
-    a2 = params[1]
-    a3 = params[2]
-
-    if len(params) > 11:
-        a4 = params[3]
-        eps1 = params[4]
-        eps2 = params[5]
-    else:
-        eps1 = params[3]
-        eps2 = params[4]
-
-    # Rotation and translation parameters
-    angle_x = params[-6]
-    angle_y = params[-5]
-    angle_z = params[-4]
-    trans_x = params[-3]
-    trans_y = params[-2]
-    trans_z = params[-1]  # Corrected indexing
-
-    # Generate the surface points for the superquadric based on its type
-    if SQ_type == 0:  # Superellipsoid
-        eta = np.linspace(-np.pi / 2, np.pi / 2, n)
-        omega = np.linspace(-np.pi, np.pi, n)
-        eta, omega = np.meshgrid(eta, omega)
-
-        X_surf = a1 * np.sign(np.cos(eta)) * (np.abs(np.cos(eta)) ** eps1) * np.sign(np.cos(omega)) * (np.abs(np.cos(omega)) ** eps2)
-        Y_surf = a2 * np.sign(np.cos(eta)) * (np.abs(np.cos(eta)) ** eps1) * np.sign(np.sin(omega)) * (np.abs(np.sin(omega)) ** eps2)
-        Z_surf = a3 * np.sign(np.sin(eta)) * (np.abs(np.sin(eta)) ** eps1)
-
-    elif SQ_type == 1:  # Hyperboloid
-        eta = np.linspace(-np.pi / 2 - 1, np.pi / 2 - 1, n)
-        omega = np.linspace(-np.pi, np.pi, n)
-        eta, omega = np.meshgrid(eta, omega)
-
-        X_surf = a1 * np.sign(1 / np.cos(eta)) * (np.abs(1 / np.cos(eta)) ** eps1) * np.sign(np.cos(omega)) * (np.abs(np.cos(omega)) ** eps2)
-        Y_surf = a2 * np.sign(1 / np.cos(eta)) * (np.abs(1 / np.cos(eta)) ** eps1) * np.sign(np.sin(omega)) * (np.abs(np.sin(omega)) ** eps2)
-        Z_surf = a3 * np.sign(np.tan(eta)) * (np.abs(np.tan(eta)) ** eps1)
-
-    elif SQ_type == 2:  # Toroid
-        eta = np.linspace(-np.pi, np.pi, n)
-        omega = np.linspace(-np.pi, np.pi, n)
-        eta, omega = np.meshgrid(eta, omega)
-
-        X_surf = a1 * (np.sign(np.cos(eta)) * (np.abs(np.cos(eta)) ** eps1) + a4) * np.sign(np.cos(omega)) * (np.abs(np.cos(omega)) ** eps2)
-        Y_surf = a2 * (np.sign(np.cos(eta)) * (np.abs(np.cos(eta)) ** eps1) + a4) * np.sign(np.sin(omega)) * (np.abs(np.sin(omega)) ** eps2)
-        Z_surf = a3 * np.sign(np.sin(eta)) * (np.abs(np.sin(eta)) ** eps1)
-
-    elif SQ_type == 3:  # Paraboloid
-        eta = np.linspace(0, 1, n)
-        omega = np.linspace(-np.pi, np.pi, n)
-        eta, omega = np.meshgrid(eta, omega)
-
-        X_surf = a1 * eta * np.sign(np.cos(omega)) * (np.abs(np.cos(omega)) ** eps2)
-        Y_surf = a2 * eta * np.sign(np.sin(omega)) * (np.abs(np.sin(omega)) ** eps2)
-        Z_surf = a3 * ((eta ** (2 / eps1)) - 1)
-
-    else:
-        raise ValueError("Incorrect SQ_type input")
-
-    # Combine the surface points into a single point cloud
-    pcl_SQ = np.vstack((X_surf.ravel(), Y_surf.ravel(), Z_surf.ravel())).T
-
-    # Debugging: Verify the initial mean before transformations
-    print(f"Initial mean of pcl_SQ before rotation/translation: {np.mean(pcl_SQ, axis=0)}")
-
-    # Rotation matrix for angles
-    Rx = np.array([
-        [1, 0, 0],
-        [0, np.cos(angle_x), -np.sin(angle_x)],
-        [0, np.sin(angle_x), np.cos(angle_x)]
-    ])
-    Ry = np.array([
-        [np.cos(angle_y), 0, np.sin(angle_y)],
-        [0, 1, 0],
-        [-np.sin(angle_y), 0, np.cos(angle_y)]
-    ])
-    Rz = np.array([
-        [np.cos(angle_z), -np.sin(angle_z), 0],
-        [np.sin(angle_z), np.cos(angle_z), 0],
-        [0, 0, 1]
-    ])
-    R = Rz @ Ry @ Rx  # Combined rotation matrix
-
-    # Apply rotation
-    pcl_SQ = pcl_SQ @ R.T
-
-    # Debugging: Check the mean after rotation
-    print(f"Mean of pcl_SQ after rotation: {np.mean(pcl_SQ, axis=0)}")
-
-    # Apply translation
-    pcl_SQ += np.array([trans_x, trans_y, trans_z])
-
-    # Debugging: Check the final mean after translation
-    print(f"Final mean of pcl_SQ after translation: {np.mean(pcl_SQ, axis=0)}")
-
-    return pcl_SQ
 def read_point_cloud_from_txt(file_path):
     """
     Reads a point cloud from a text file where each line contains 3D coordinates (x, y, z).
@@ -176,10 +67,10 @@ if __name__ == "__main__":
             1.00000000e-01, 1.00000000e-01, 1.01436982e-01, 1.50867874e+00,
             -7.92529153e-05, 8.08553949e-02, 9.05564416e-03, 1.00281462e+00
         ])
-        sq_type = 0
+        sq_type = 2
 
         # Generate the second point cloud using the SQ2PCL function
-        pcl2 = SQ2PCL(params, sq_type)
+        pcl2 = SQF.SQ2PCL(params, sq_type)
         print(f"Generated second point cloud with {pcl2.shape[0]} points.")
 
         # Display the two point clouds together
