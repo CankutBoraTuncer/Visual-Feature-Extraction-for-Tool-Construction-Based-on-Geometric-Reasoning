@@ -43,7 +43,7 @@ if __name__ == "__main__":
     param_ref  = {}
     for key, pcd in segments_ref.items():
         sqf = SQF(pcd, verbose=0)
-        param = sqf.fit()
+        param, _, _, _ = sqf.fit(sq_type=[0])
         if len(param) < 12:
             param = np.pad(param, (0, 12 - len(param)), mode='constant', constant_values=0)
         param_ref[key] = param
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     param_cand = {}
     for key, pcd in segments_cand.items():
         sqf = SQF(pcd, verbose=0)
-        param = sqf.fit()
+        param, _, _, _ = sqf.fit(sq_type=[0])
         if len(param) < 12:
             param = np.pad(param, (0, 12 - len(param)), mode='constant', constant_values=0)
         param_cand[key] = param
