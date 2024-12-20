@@ -32,8 +32,7 @@ class Score():
                 ref_name = list(self.reference_params.keys())[j]  
                 ref = self.reference_params[ref_name]  
                 
-                shape_error += np.linalg.norm(cand[3:5] - ref[3:5])
-                
+                shape_error += np.linalg.norm(cand[4:6] - ref[4:6])
                 size_error += np.linalg.norm(cand[0:3] - ref[0:3])
                 
                 for k in range(len(perm)):

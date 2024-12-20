@@ -203,15 +203,7 @@ class SQF():
         if self.verbose > 1:
             self.visualizePointClouds([SQ, segment_members_original], [f"BEST SQ of type: {sq_type}", "original ptc"])
 
-        if optimum_type == 2:  
-            fit_params = copy.deepcopy(SQ_optimum)
-        else:
-            fit_params = np.zeros(11)
-            fit_params[:3] = SQ_optimum[:3]
-            fit_params[3:5] = SQ_optimum[4:6]
-            fit_params[5:8] = SQ_optimum[6:9]
-            fit_params[8:11] = SQ_optimum[9:12]
-
+        fit_params = copy.deepcopy(SQ_optimum)
         fit_type = optimum_type
 
         return fit_params, fit_type, SQ, residue_SQ
