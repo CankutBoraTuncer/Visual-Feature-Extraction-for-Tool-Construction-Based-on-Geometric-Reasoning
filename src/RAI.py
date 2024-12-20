@@ -8,7 +8,39 @@ class RAI():
 
     def __init__(self, verbose=0):
         self.verbose = verbose
+
+    def create_tool(self, scene, match_1, match_2):
+        _, candidate_1 = match_1
+        _, candidate_2 = match_2
+
+        attachment_1 = "at_" + candidate_1.split("_")[1] + "_" + candidate_1.split("_")[2]
+        attachment_2 = "at_" + candidate_2.split("_")[1] + "_" + candidate_2.split("_")[2]
+
+        self.addMarker(scene, [0, 0, 0], "l_l_gripper", "home", 0.0001, True)
+
+        S = ry.Skeleton()
+        S.enableAccumulatedCollisions(True)
+
+        S.addEntry([0.1, -1], ry.SY.touch, ["l_l_gripper", candidate_1])
+        S.addEntry([0.3, -1], ry.SY.stable, ["l_l_gripper", candidate_1])
+        S.addEntry([0.8, -1], ry.SY.poseEq, [attachment_2, attachment_1])
+        S.addEntry([1, -1], ry.SY.stable, [candidate_2, candidate_1])
+
+        S.addEntry([1.1, -1], ry.SY.touch, ["l_l_gripper", candidate_2])
+        S.addEntry([1.3, -1], ry.SY.stable, ["l_l_gripper", candidate_2])
+        S.addEntry([1.8, -1], ry.SY.poseEq, ["home", "l_l_gripper"])
+
+        komo = S.getKomo_path(scene, stepsPerPhase=30, accScale=1e0, lenScale=1e-2, homingScale=1e-1, collScale=1e3)
+        ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
+        print(ret)
+        scene.view(True)
+        komo.view_play(pause=True, delay=0.5)
+        return ret.feasible
+    
+  
         
+
+
     def generate_ref_point_cloud(self, model_path, cam_list, filter = 1, target_path = "", object_name=""):
         model_names = os.listdir(model_path)
         obj_c = 0

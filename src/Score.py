@@ -3,42 +3,54 @@ import numpy as np
 
 class Score():
     def __init__(self, reference_params, candidate_params, verbose=0):
-        self.reference_params = reference_params
-        self.candidate_params = candidate_params
+        self.reference_params = reference_params  
+        self.candidate_params = candidate_params  
         self.verbose = verbose
+        self.weight_shape = 1
+        self.weight_size = 1
+        self.weight_proportion = 1
+        self.weight_attachment = 1
 
-    def calculate_action_score(self, ref_arrays, cand_arrays):
-        score = 0
-        for ref, cand in zip(ref_arrays, cand_arrays):
-            shape_diff = sum(abs(cand[3:5] - ref[3:5]))
-            position_diff = sum(abs(cand[-3:] - ref[-3:]))
-            score += shape_diff + position_diff
-        return score
-
-    def find_best_fit(self):
-        ref_keys = list(self.reference_params.keys())
-        cand_keys = list(self.candidate_params.keys())
+    def algorithm_1(self):
+        error_list = []
         
-        num_parts = len(ref_keys)
-        best_score = float('inf')
-        best_permutation = None
-        best_mapping = []
-
-        for perm in itertools.permutations(cand_keys, num_parts):
-            ref_arrays = [self.reference_params[k] for k in ref_keys]
-            cand_arrays = [self.candidate_params[k] for k in perm]
-
-            score = self.calculate_action_score(ref_arrays, cand_arrays)
+        candidate_names = list(self.candidate_params.keys())
+        candidate_values = list(self.candidate_params.values())
+        
+        candidate_perm = list(itertools.permutations(candidate_values, 2))
+        
+        for perm in candidate_perm:
+            total_error = 0
+            shape_error = 0
+            size_error = 0
+            ratio_error = 0
             
-            if score < best_score:
-                best_score = score
-                best_permutation = perm
-                best_mapping = [[ref_key, cand_key] for ref_key, cand_key in zip(ref_keys, perm)]
-
-        if self.verbose > 0:
-            print("Best Permutation (Matched Candidate Parameters):")
-            for ref_obj, cand_obj in best_mapping:
-                print(f"{ref_obj} matches with {cand_obj}")
-            print(f"\nBest Score: {best_score}")
-
-        return best_mapping, best_permutation, best_score
+            for j, cand in enumerate(perm):
+                ref_name = list(self.reference_params.keys())[j]  
+                ref = self.reference_params[ref_name]  
+                
+                shape_error += np.linalg.norm(cand[3:5] - ref[3:5])
+                
+                size_error += np.linalg.norm(cand[0:3] - ref[0:3])
+                
+                for k in range(len(perm)):
+                    if k != j:  
+                        ratio_error += abs((cand[0] / cand[1]) - (perm[k][0] / perm[k][1]))
+            
+            total_error = (
+                self.weight_shape * shape_error + 
+                self.weight_size * size_error + 
+                self.weight_proportion * ratio_error
+            )
+            error_list.append(total_error)
+        
+        sorted_indices = np.argsort(error_list)
+        
+        sorted_T = [tuple(candidate_names[idx] for idx in perm) for perm in list(itertools.permutations(range(len(candidate_names)), 2))]
+        sorted_T = [sorted_T[i] for i in sorted_indices]  
+        
+        if self.verbose>0:
+            print(f"{list(self.reference_params.keys())[0]} object matches with {sorted_T[0][0]} object")
+            print(f"{list(self.reference_params.keys())[1]} object matches with {sorted_T[0][1]} object")
+        
+        return [list(self.reference_params.keys())[0], sorted_T[0][0]], [list(self.reference_params.keys())[1], sorted_T[0][1]]

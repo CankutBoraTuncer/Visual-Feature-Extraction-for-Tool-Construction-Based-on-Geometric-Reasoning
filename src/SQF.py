@@ -138,7 +138,6 @@ class SQF():
         for sq_type in SQ_type:
             # Parameter initialization for the segment
             scale, orientations, eps, p, bound_min, bound_max = self.param_init(segment_members, sq_type)
-            print(f"bbox size: {np.linalg.norm(bound_min-bound_max)}")
 
             # Define parameter bounds
             lower_bounds = [
@@ -163,17 +162,19 @@ class SQF():
             x_init[4:] = [x + 1e-6 if abs(x) < 1e-6 else x for x in x_init[4:]]
 
             if np.any(lower_bounds >= upper_bounds):
-                print(f"lowers are not strictly lower")
+                if self.verbose > 0:
+                    print(f"lowers are not strictly lower")
                 assert False
 
             for i, (x, lb, ub) in enumerate(zip(x_init, lower_bounds, upper_bounds)):
                 if not (lb <= x <= ub):
-                    print(f"Parameter {i} out of bounds: {x} not in [{lb}, {ub}]")
+                    if self.verbose > 0:
+                        print(f"Parameter {i} out of bounds: {x} not in [{lb}, {ub}]")
                     assert False
-
-            print(f"x_init: {x_init}")
-            print(f"lower_bound: {lower_bounds}")
-            print(f"upper_bound: {upper_bounds}")
+            if self.verbose > 0:
+                print(f"x_init: {x_init}")
+                print(f"lower_bound: {lower_bounds}")
+                print(f"upper_bound: {upper_bounds}")
 
             # Objective function for optimization
             def objective_fn(params):
@@ -217,9 +218,9 @@ class SQF():
             pcl_SQ_dist, SQ_pcl_dist = self.pcl_dist(segment_members_original, SQ)
             residue = pcl_SQ_dist + SQ_pcl_dist
             # self.visualizePointClouds([SQ, segment_members_original], [f"SQ of type: {sq_type}", "original ptc"])
-
-            print(f"residue is for type {sq_type} is {residue}")
-            print(f"params for type: {sq_type} is: {optimum_quadrics}")
+            if self.verbose > 0:
+                print(f"residue is for type {sq_type} is {residue}")
+                print(f"params for type: {sq_type} is: {optimum_quadrics}")
 
             if residue < residue_SQ:
                 SQ_optimum = optimum_quadrics
@@ -228,11 +229,13 @@ class SQF():
 
 
         # Generate the final superquadric point cloud
-        print(f"SQ_optimum: {SQ_optimum}")
+        if self.verbose > 0:
+            print(f"SQ_optimum: {SQ_optimum}")
         # SQ_optimum = np.array([0.0051, 0.0143, 0.0757, 0.0000, 0.1000, 0.7779, -1.2058, 1.5672, 0.0096, 0.0409, -0.0025, 0.9990])
         # 0.0051    0.0143    0.0757    0.0000    0.1000    0.7779   -1.2058    1.5672    0.0096    0.0409   -0.0025    0.9990
         SQ = self.SQ2PCL(SQ_optimum, optimum_type)
-        self.visualizePointClouds([SQ, segment_members_original], [f"BEST SQ of type: {sq_type}", "original ptc"])
+        if self.verbose > 1:
+            self.visualizePointClouds([SQ, segment_members_original], [f"BEST SQ of type: {sq_type}", "original ptc"])
         # SQ = np.dot(SQ, inv_pca.T)
 
         # fit_params = copy.deepcopy(SQ_optimum)
