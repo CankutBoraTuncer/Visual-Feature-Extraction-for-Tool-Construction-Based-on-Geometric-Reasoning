@@ -1,5 +1,5 @@
 ** compiled at:     Nov 26 2024 16:46:14
-** execution start: 2024-12-20 13:29:22:726378
+** execution start: 2024-12-20 14:18:35:326965
 graph.cpp:initParameters:1512(3) opening config file 'rai.cfg'
 graph.cpp:initParameters:1519(3)  - failed
 graph.cpp:initParameters:1525(3) opening base config file '/root/local/rai/../local.cfg'
@@ -7,7 +7,6 @@ graph.cpp:initParameters:1531(3)  - failed
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:cd_file:1042(3) entering path '../src/config' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/test'
 util.cpp:getIs:1071(3) opening input file 'tools_simple1_s.g'
-graph.cpp:readNodeParents2:845(-1) parsing parent tuple 'scraper_head' -- unknown 0. parent 'scraper_head'
 util.cpp:cd_start:1034(3) entering path '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/src/config'
 util.cpp:cd_file:1042(3) entering path '../models/tools/simple/parts' from '/home/bora/Desktop/Bilkent_MS/VIS/CS554_Computer_Vision_Project/src/config'
 util.cpp:getIs:1071(3) opening input file 'axe_handle_s.stl'

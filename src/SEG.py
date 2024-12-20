@@ -15,6 +15,65 @@ class SEG():
     # ---------------------------------------------------------------------------------------#
     # ---------------------------------------------------------------------------------------#
 
+    def euclidean_dist(self, a, b):
+        return np.sqrt(np.sum((a - b) ** 2))
+    
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
+    def region_query(self, X, point_idx, eps, kdtree):
+        point = X[point_idx]
+        [_, idxs, _] = kdtree.search_radius_vector_3d(point, eps)
+        return idxs
+    
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
+    def expand_cluster(self, X, labels, point_idx, neighbors, cluster_id, eps, min_samples, kdtree):
+        labels[point_idx] = cluster_id
+        i = 0
+        while i < len(neighbors):
+            n_point_idx = neighbors[i]
+            if labels[n_point_idx] == -1:
+                labels[n_point_idx] = cluster_id
+            elif labels[n_point_idx] == 0:
+                labels[n_point_idx] = cluster_id
+                n_neighbors = self.region_query(X, n_point_idx, eps, kdtree)
+                if len(n_neighbors) >= min_samples:
+                    neighbors.extend(n_neighbors)
+            i += 1
+
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
+    def DBSCAN(self, X, eps, min_samples):
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(X)
+        kdtree = o3d.geometry.KDTreeFlann(pcd)
+
+        labels = np.zeros(len(X), dtype=int)
+        cluster_id = 0
+
+        for i in range(len(X)):
+            if labels[i] != 0:
+                continue
+
+            neighbors = self.region_query(X, i, eps, kdtree)
+            if len(neighbors) < min_samples:
+                labels[i] = -1
+            else:
+                cluster_id += 1
+                self.expand_cluster(X, labels, i, neighbors, cluster_id, eps, min_samples, kdtree)
+
+        return labels
+    
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+
     def segment_point_cloud(self, point_cloud, n_clusters=2, init="k-means++", n_init=20, max_iter=600, random_state=42, is_save=False, save_path=None):
         vertices = point_cloud.points
 
@@ -42,10 +101,7 @@ class SEG():
 
     def segment_objects(self, point_cloud, scene, eps=0.02, min_samples=10, is_save=False, save_path=None):
         vertices = np.array(point_cloud.points)
-
-        dbscan = DBSCAN(eps=eps, min_samples=min_samples)
-        labels = dbscan.fit_predict(vertices)
-
+        labels = self.DBSCAN(vertices, eps, min_samples)
         point_cloud["Labels"] = labels
 
         if self.verbose > 0:
@@ -71,56 +127,7 @@ class SEG():
             segments[RAI.point2obj(scene, segment_points)] = new_cloud
 
         return segments
-
-
-    # ---------------------------------------------------------------------------------------# 
-    # ---------------------------------------------------------------------------------------#
-    # ---------------------------------------------------------------------------------------#
-
-    def _DBSCAN(self, point_cloud, rad=0.02, min_pts=10):
-        vis_p = set()
-        clusters = []
-
-        tree = KDTree(point_cloud)
-
-        for i in range(len(point_cloud)):
-            if i in vis_p:
-                continue
-
-            vis_p.add(i)
-            neighbors = tree.query_radius([point_cloud[i]], r=rad)[0]
-
-            if len(neighbors) < min_pts:
-                continue 
-
-            cluster = set()
-            cluster.add(i)
-
-            queue = list(neighbors)
-            while queue:
-                current_idx = queue.pop(0)
-
-                if current_idx not in vis_p:
-                    vis_p.add(current_idx)
-                    current_neighbors = tree.query_radius([point_cloud[current_idx]], r=rad)[0]
-                    if len(current_neighbors) >= min_pts:
-                        queue.extend([n for n in current_neighbors if n not in vis_p])
-
-                cluster.add(current_idx)
-            clusters.append(list(cluster))
-
-        if self.verbose > 0:
-            labels = -1 * np.ones(len(point_cloud), dtype=int)
-            for cluster_id, cluster_indices in enumerate(clusters):
-                for index in cluster_indices:
-                    labels[index] = cluster_id
-            cloud_pv = pv.PolyData(point_cloud)
-            cloud_pv['Labels'] = labels
-            cloud_pv.plot(scalars='Labels', cmap='tab10', point_size=5, render_points_as_spheres=True)
-
-        return clusters
-
-                        
+                  
     # ---------------------------------------------------------------------------------------# 
     # ---------------------------------------------------------------------------------------#
     # ---------------------------------------------------------------------------------------#
@@ -200,8 +207,6 @@ class SEG():
 
         for i, label in enumerate(labels):
             segmented_points[label].append(points[i])
-
-
 
         point_clouds = []
         for label, points_list in segmented_points.items():
@@ -292,3 +297,5 @@ class SEG():
             C_view.view(True)
         
         return pv.PolyData(pcl_filtered)
+    
+
