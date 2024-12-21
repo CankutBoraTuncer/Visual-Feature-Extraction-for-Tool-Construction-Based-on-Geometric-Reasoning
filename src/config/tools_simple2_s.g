@@ -10,13 +10,13 @@ obj_prism_long(ob_plane): {X: [-0.1 0.0 0.06 0.7 0 0.7 0], joint:rigid, color: [
 at_prism_long(obj_prism_long) : {X: [-0.1 -0.1 0.06, 1 0 0 0], shape: marker, size: [0.001]}
 
 obj_disk(ob_plane): {X: [0.0 0.1 0.07 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/disk.stl>}
-at_disk(obj_disk) : {X: [0.0 0.1 0.08, 1 0 0 0], shape: marker, size: [0.1]}
+at_disk(obj_disk) : {X: [0.0 0.1 0.08, 1 0 0 0], shape: marker, size: [0.001]}
 
 obj_sphere_half_hollow(ob_plane): {X: [0.1 -0.05 0.07 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/sphere_half_hollow.stl>}
-at_sphere_half_hollow(obj_sphere_half_hollow) : {X: [0.15 -0.0 0.07, 1 0 0 0], shape: marker, size: [0.001]}
+at_sphere_half_hollow(obj_sphere_half_hollow) : {X: [0.1 -0.03 0.065, 1 0 0 0], shape: marker, size: [0.001]}
 
 obj_prism_short(ob_plane): {X: [0.2 0.1 0.07 0.7 0 -0.7 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/prism_short.stl>}
-at_prism_short(obj_prism_short) : {X: [0.15 -0.0 0.07, 1 0 0 0], shape: marker, size: [0.001]}
+at_prism_short(obj_prism_short) : {X: [0.18 0.1 0.07, 0.7 0 0 0.7], shape: marker, size: [0.001]}
 
 cam_front(world): { rel: [0, 1, 1,  0.00000000,   0.00000000,  -0.92387953,   0.38268344 ], shape: camera, size: [0.1], width: 240, height: 240, focalLength: 3, zRange: [0.5, 3] },
 cam_back(world): { rel: [0, -1, 1,    0.38268343,  -0.92387953,   0.00000000,   0.00000000 ], shape: camera, size: [0.1], width: 240, height: 240, focalLength: 3, zRange: [0.5, 3] },

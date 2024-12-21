@@ -3,5 +3,5 @@ import sys
 sys.path.append('../src')
 
 C = ry.Config()
-C.addFile("../src/config/tools_simple2_s.g")
-C.watchFile("../src/config/tools_simple2_s.g")
+C.addFile("../src/config/tools_simple1_s.g")
+C.watchFile("../src/config/tools_simple1_s.g")

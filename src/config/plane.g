@@ -1,2 +1,4 @@
 world: {},
-plane(world): {X:[0 0 .1 1 0 0 0], shape:box, size: [10, 10, 0.1], contact: 1, color: [0.5, 0.5, 0.5]}
+table (world){
+    shape:ssBox, Q: "t(0 0. 0)", size:[4. 4. .1 .02], color:[.3 .3 .3], contact: 1
+}

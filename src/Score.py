@@ -8,11 +8,7 @@ class Score():
         self.verbose = verbose
         self.weight_shape = 1
         self.weight_size = 1
-        self.weight_proportion = 1
-
-    # ---------------------------------------------------------------------------------------# 
-    # ---------------------------------------------------------------------------------------#
-    # ---------------------------------------------------------------------------------------#
+        self.weight_proportion = 0.5
 
     def algorithm_1(self):
         error_list = []
@@ -32,27 +28,44 @@ class Score():
                 ref_name = list(self.reference_params.keys())[j]  
                 ref = self.reference_params[ref_name]  
                 
-                shape_error += np.linalg.norm(cand[4:6] - ref[4:6])
-                size_error += np.linalg.norm(cand[0:3] - ref[0:3])
+                shape_error += np.linalg.norm([ref[4] - cand[4], ref[5] - cand[5]], ord=2)
+                size_error += np.linalg.norm([ref[0] - cand[0], 
+                             ref[1] - cand[1], 
+                             ref[2] - cand[2]], ord=2)
                 
                 for k in range(len(perm)):
                     if k != j:  
-                        ratio_error += abs((cand[0] / cand[1]) - (perm[k][0] / perm[k][1]))
-            
+
+                        ratio1_ref = ref[0] / ref[1]
+                        ratio2_ref = ref[0] / ref[2]
+                        ratio3_ref = ref[1] / ref[2]
+
+                        ratio1_cand = cand[0] / cand[1]
+                        ratio2_cand = cand[0] / cand[2]
+                        ratio3_cand = cand[1] / cand[2]
+                        
+                        ratio_error += ((ratio1_ref - ratio1_cand) ** 2 + 
+                                                (ratio2_ref - ratio2_cand) ** 2 + 
+                                                (ratio3_ref - ratio3_cand) ** 2) ** 0.5    
             total_error = (
                 self.weight_shape * shape_error + 
                 self.weight_size * size_error + 
                 self.weight_proportion * ratio_error
             )
-            error_list.append(total_error)
+
+            error_list.append((perm, total_error, shape_error, size_error, ratio_error))
         
-        sorted_indices = np.argsort(error_list)
+        error_list.sort(key=lambda x: x[1])
         
-        sorted_T = [tuple(candidate_names[idx] for idx in perm) for perm in list(itertools.permutations(range(len(candidate_names)), 2))]
-        sorted_T = [sorted_T[i] for i in sorted_indices]  
-        
-        if self.verbose>0:
-            print(f"{list(self.reference_params.keys())[0]} object matches with {sorted_T[0][0]} object")
-            print(f"{list(self.reference_params.keys())[1]} object matches with {sorted_T[0][1]} object")
-        
-        return [list(self.reference_params.keys())[0], sorted_T[0][0]], [list(self.reference_params.keys())[1], sorted_T[0][1]]
+        sorted_T = []
+        for perm, score, shape_error, size_error, ratio_error in error_list:
+            matches = [
+                (list(self.reference_params.keys())[i], 
+                candidate_names[next(idx for idx, cand in enumerate(candidate_values) if np.array_equal(cand, p))])
+                for i, p in enumerate(perm)
+            ]
+            sorted_T.append(matches)
+            if self.verbose > 0:
+                print(f"Matches: {matches}, Total Error: {score:.4f}, Shape Error: {shape_error:.4f}, Size Error: {size_error:.4f}, Ratio Error: {ratio_error:.4f}")
+
+        return sorted_T[0][0], sorted_T[0][1]

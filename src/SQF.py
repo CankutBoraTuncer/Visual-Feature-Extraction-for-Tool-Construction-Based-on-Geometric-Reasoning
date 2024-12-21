@@ -8,6 +8,8 @@ import copy
 import matplotlib.pyplot as plt
 from matplotlib.cm import get_cmap
 from scipy.optimize import least_squares
+import os
+import pandas as pd
 
 class SQF():
     def __init__(self, pcd, verbose = 0):
@@ -18,7 +20,29 @@ class SQF():
     # ---------------------------------------------------------------------------------------# 
     # ---------------------------------------------------------------------------------------#
     # ---------------------------------------------------------------------------------------#
-    
+    @staticmethod
+    def save_parameters_to_csv(param_dict, file_name):
+        data = [{'object': key, **{f'param_{i}': param[i] for i in range(len(param))}} for key, param in param_dict.items()]
+        df = pd.DataFrame(data)
+        df.to_csv(file_name, index=False)
+        print(f"Parameters saved to {file_name}")
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
+    @staticmethod
+    def load_parameters_from_csv(file_name):
+        if not os.path.exists(file_name):
+            return {}
+        df = pd.read_csv(file_name)
+        param_dict = {
+            row['object']: row[[f'param_{i}' for i in range(12)]].values.astype(float)
+            for _, row in df.iterrows()
+        }
+        print(f"Parameters loaded from {file_name}")
+        return param_dict
+    # ---------------------------------------------------------------------------------------# 
+    # ---------------------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------------------------#
     def fit(self, sq_type):
         points = np.asarray(self.pcd.points)
         pca = PCA(n_components=3)
@@ -169,14 +193,12 @@ class SQF():
             result = least_squares(
                 fun=residuals_fn,
                 x0=x_init,
-                bounds=bounds,
-                method='trf',  
+                method='lm',
                 max_nfev=5000,
-                ftol=1e-8,
-                xtol=1e-8,
+                ftol=1e-6,
+                xtol=1e-6,
                 verbose=1
             )
-
             if not result.success:
                 raise ValueError(f"Optimization failed: {result.message}")
 
