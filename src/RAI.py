@@ -62,7 +62,7 @@ class RAI():
                 return ptc_arr
 
             print("Model name:", model_name)
-            base_arg = "X: [0.0, 0.0, 0.3, 0, 0, 1, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <"+model_path+"/"
+            base_arg = "X: [0.0, 0.0, 0.25, 0.7, 0.0, -0.7, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <"+model_path+"/"
             arg = base_arg + model_name + ".stl>,"
             
             C = ry.Config()
