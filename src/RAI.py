@@ -14,6 +14,9 @@ class RAI():
     # ---------------------------------------------------------------------------------------#
 
     def create_tool(self, scene, match_1, match_2):
+
+        scene.addFile("../src/config/robot.g")
+
         _, candidate_1 = match_1
         _, candidate_2 = match_2
 
@@ -62,7 +65,7 @@ class RAI():
                 return ptc_arr
 
             print("Model name:", model_name)
-            base_arg = "X: [0.0, 0.0, 0.25, 0.7, 0.0, -0.7, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <"+model_path+"/"
+            base_arg = "X: [0.0, 0.0, 0.25, 0.7, 0.7, 0, 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <"+model_path+"/"
             arg = base_arg + model_name + ".stl>,"
             
             C = ry.Config()
@@ -140,7 +143,7 @@ class RAI():
         mask = ~np.any(np.all(pts_w[:, None, :] == camera_positions[None, :, :], axis=2), axis=1)
         pts_w_f = pts_w[mask].flatten()
 
-        if(self.verbose>1):
+        if(self.verbose>0):
             C_view = ry.Config()
             C_view.addFrame("world")
             C_view.getFrame("world").setPointCloud(pts_w_f, [0,0,0])
@@ -194,7 +197,7 @@ class RAI():
         mask = ~np.any(np.all(pts_w[:, None, :] == camera_positions[None, :, :], axis=2), axis=1)
         pts_w_f = pts_w[mask].flatten()
 
-        if(self.verbose>1):
+        if(self.verbose>0):
             C_view = ry.Config()
             C_view.addFrame("world")
             C_view.getFrame("world").setPointCloud(pts_w_f, [0,0,0])
@@ -231,7 +234,7 @@ class RAI():
         for obj in objects:
             if "obj" in obj:
                 for p in pts:
-                    if np.linalg.norm(scene.getFrame(obj).getPosition() - p) < 0.1:
+                    if np.linalg.norm(scene.getFrame(obj).getPosition() - p) < 0.05:
                         return obj
         return ""
 
