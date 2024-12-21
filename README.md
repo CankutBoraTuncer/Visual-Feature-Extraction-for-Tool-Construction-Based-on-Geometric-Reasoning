@@ -13,5 +13,5 @@ git clone https://github.com/CankutBoraTuncer/CS554_Computer_Vision_Project.git
 ```
 
 ## Testing
-Run the main.py file in the test folder.
+Run the main.ipynb file in the test folder.
 
