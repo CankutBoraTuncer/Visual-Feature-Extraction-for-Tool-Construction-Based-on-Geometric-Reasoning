@@ -193,11 +193,12 @@ class SQF():
             result = least_squares(
                 fun=residuals_fn,
                 x0=x_init,
-                method='lm',
+                method='trf',
+                bounds=bounds,
                 max_nfev=5000,
                 ftol=1e-6,
                 xtol=1e-6,
-                verbose=1
+                verbose=self.verbose
             )
             if not result.success:
                 raise ValueError(f"Optimization failed: {result.message}")
