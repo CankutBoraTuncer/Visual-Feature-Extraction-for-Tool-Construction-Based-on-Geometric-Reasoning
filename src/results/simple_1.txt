@@ -1,0 +1,43 @@
+Matches: [('spoon_head', 'obj_sphere_hollow'), ('spoon_body', 'obj_prism_short')], Total Error: 0.3789, Shape Error: 0.0734, Size Error: 0.1813, Ratio Error: 0.2483
+Matches: [('spoon_head', 'obj_sphere_hollow'), ('spoon_body', 'obj_prism_long')], Total Error: 0.3791, Shape Error: 0.0734, Size Error: 0.1867, Ratio Error: 0.2379
+Matches: [('spoon_head', 'obj_sphere_hollow'), ('spoon_body', 'obj_prism_short_hollow')], Total Error: 0.5031, Shape Error: 0.0734, Size Error: 0.2249, Ratio Error: 0.4095
+Matches: [('spoon_head', 'obj_sphere'), ('spoon_body', 'obj_prism_short')], Total Error: 1.0997, Shape Error: 0.2300, Size Error: 0.5317, Ratio Error: 0.6759
+Matches: [('spoon_head', 'obj_sphere'), ('spoon_body', 'obj_prism_long')], Total Error: 1.0998, Shape Error: 0.2300, Size Error: 0.5370, Ratio Error: 0.6655
+Matches: [('spoon_head', 'obj_sphere'), ('spoon_body', 'obj_prism_short_hollow')], Total Error: 1.2239, Shape Error: 0.2300, Size Error: 0.5753, Ratio Error: 0.8372
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_prism_long')], Total Error: 1.9708, Shape Error: 0.9969, Size Error: 0.5913, Ratio Error: 0.7653
+Matches: [('spoon_head', 'obj_prism_short_hollow'), ('spoon_body', 'obj_prism_short')], Total Error: 2.0000, Shape Error: 0.9969, Size Error: 0.5767, Ratio Error: 0.8528
+Matches: [('spoon_head', 'obj_prism_short_hollow'), ('spoon_body', 'obj_prism_long')], Total Error: 2.0001, Shape Error: 0.9969, Size Error: 0.5821, Ratio Error: 0.8423
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_prism_short_hollow')], Total Error: 2.0948, Shape Error: 0.9969, Size Error: 0.6295, Ratio Error: 0.9369
+Matches: [('spoon_head', 'obj_prism_long'), ('spoon_body', 'obj_prism_short')], Total Error: 2.3258, Shape Error: 0.9969, Size Error: 0.8229, Ratio Error: 1.0120
+Matches: [('spoon_head', 'obj_prism_long'), ('spoon_body', 'obj_prism_short_hollow')], Total Error: 2.4500, Shape Error: 0.9969, Size Error: 0.8665, Ratio Error: 1.1733
+Matches: [('spoon_head', 'obj_sphere_hollow'), ('spoon_body', 'obj_sphere')], Total Error: 2.7958, Shape Error: 1.2972, Size Error: 0.9428, Ratio Error: 1.1114
+Matches: [('spoon_head', 'obj_sphere'), ('spoon_body', 'obj_sphere_hollow')], Total Error: 2.9977, Shape Error: 1.3003, Size Error: 1.0246, Ratio Error: 1.3455
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_sphere_hollow')], Total Error: 3.8686, Shape Error: 2.0672, Size Error: 1.0788, Ratio Error: 1.4453
+Matches: [('spoon_head', 'obj_prism_short_hollow'), ('spoon_body', 'obj_sphere_hollow')], Total Error: 3.8980, Shape Error: 2.0672, Size Error: 1.0696, Ratio Error: 1.5224
+Matches: [('spoon_head', 'obj_prism_long'), ('spoon_body', 'obj_sphere_hollow')], Total Error: 4.2238, Shape Error: 2.0672, Size Error: 1.3158, Ratio Error: 1.6816
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_sphere')], Total Error: 4.3875, Shape Error: 2.2207, Size Error: 1.3474, Ratio Error: 1.6388
+Matches: [('spoon_head', 'obj_prism_short_hollow'), ('spoon_body', 'obj_sphere')], Total Error: 4.4168, Shape Error: 2.2207, Size Error: 1.3382, Ratio Error: 1.7159
+Matches: [('spoon_head', 'obj_prism_long'), ('spoon_body', 'obj_sphere')], Total Error: 4.7427, Shape Error: 2.2207, Size Error: 1.5844, Ratio Error: 1.8751
+
+
+Finding the best matching candidate objects to the reference tool set
+Matches: [('hammer_head', 'obj_prism_short_hollow'), ('hammer_handle', 'obj_prism_long')], Total Error: 0.8763, Shape Error: 0.0000, Size Error: 0.4945, Ratio Error: 0.7637
+Matches: [('hammer_head', 'obj_prism_short'), ('hammer_handle', 'obj_prism_long')], Total Error: 0.9530, Shape Error: 0.0000, Size Error: 0.5336, Ratio Error: 0.8387
+Matches: [('hammer_head', 'obj_prism_short_hollow'), ('hammer_handle', 'obj_prism_short')], Total Error: 1.1928, Shape Error: 0.0000, Size Error: 0.7376, Ratio Error: 0.9104
+Matches: [('hammer_head', 'obj_prism_short'), ('hammer_handle', 'obj_prism_short_hollow')], Total Error: 1.2943, Shape Error: 0.0000, Size Error: 0.8069, Ratio Error: 0.9747
+Matches: [('hammer_head', 'obj_prism_long'), ('hammer_handle', 'obj_prism_short')], Total Error: 1.6371, Shape Error: 0.0000, Size Error: 1.0204, Ratio Error: 1.2332
+Matches: [('hammer_head', 'obj_prism_long'), ('hammer_handle', 'obj_prism_short_hollow')], Total Error: 1.6619, Shape Error: 0.0000, Size Error: 1.0506, Ratio Error: 1.2225
+Matches: [('hammer_head', 'obj_sphere_hollow'), ('hammer_handle', 'obj_prism_long')], Total Error: 1.6750, Shape Error: 1.0703, Size Error: 0.2689, Ratio Error: 0.6717
+Matches: [('hammer_head', 'obj_sphere'), ('hammer_handle', 'obj_prism_long')], Total Error: 1.7427, Shape Error: 1.2238, Size Error: 0.3031, Ratio Error: 0.4316
+Matches: [('hammer_head', 'obj_sphere_hollow'), ('hammer_handle', 'obj_prism_short')], Total Error: 1.9915, Shape Error: 1.0703, Size Error: 0.5120, Ratio Error: 0.8183
+Matches: [('hammer_head', 'obj_sphere_hollow'), ('hammer_handle', 'obj_prism_short_hollow')], Total Error: 2.0164, Shape Error: 1.0703, Size Error: 0.5422, Ratio Error: 0.8077
+Matches: [('hammer_head', 'obj_sphere'), ('hammer_handle', 'obj_prism_short')], Total Error: 2.0591, Shape Error: 1.2238, Size Error: 0.5462, Ratio Error: 0.5782
+Matches: [('hammer_head', 'obj_sphere'), ('hammer_handle', 'obj_prism_short_hollow')], Total Error: 2.0840, Shape Error: 1.2238, Size Error: 0.5764, Ratio Error: 0.5676
+Matches: [('hammer_head', 'obj_prism_short_hollow'), ('hammer_handle', 'obj_sphere_hollow')], Total Error: 3.1001, Shape Error: 1.0703, Size Error: 1.2262, Ratio Error: 1.6074
+Matches: [('hammer_head', 'obj_prism_short'), ('hammer_handle', 'obj_sphere_hollow')], Total Error: 3.1768, Shape Error: 1.0703, Size Error: 1.2653, Ratio Error: 1.6824
+Matches: [('hammer_head', 'obj_prism_long'), ('hammer_handle', 'obj_sphere_hollow')], Total Error: 3.5444, Shape Error: 1.0703, Size Error: 1.5090, Ratio Error: 1.9302
+Matches: [('hammer_head', 'obj_prism_short_hollow'), ('hammer_handle', 'obj_sphere')], Total Error: 3.5770, Shape Error: 1.2238, Size Error: 1.4941, Ratio Error: 1.7183
+Matches: [('hammer_head', 'obj_prism_short'), ('hammer_handle', 'obj_sphere')], Total Error: 3.6536, Shape Error: 1.2238, Size Error: 1.5332, Ratio Error: 1.7933
+Matches: [('hammer_head', 'obj_sphere'), ('hammer_handle', 'obj_sphere_hollow')], Total Error: 3.9665, Shape Error: 2.2941, Size Error: 1.0348, Ratio Error: 1.2752
+Matches: [('hammer_head', 'obj_prism_long'), ('hammer_handle', 'obj_sphere')], Total Error: 4.0213, Shape Error: 1.2238, Size Error: 1.7769, Ratio Error: 2.0411
+Matches: [('hammer_head', 'obj_sphere_hollow'), ('hammer_handle', 'obj_sphere')], Total Error: 4.3757, Shape Error: 2.2941, Size Error: 1.2685, Ratio Error: 1.6262

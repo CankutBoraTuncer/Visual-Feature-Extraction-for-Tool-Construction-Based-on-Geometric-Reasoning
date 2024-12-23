@@ -6,20 +6,32 @@ table (world){
 
 ob_plane(table){}
 
-obj_comb(ob_plane): {X: [-0.15 0.0 0.08 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/comb.stl>}
-at_comb(obj_comb) : {X: [-0.15 -0.03 0.08, 1 0 0 0], shape: marker, size: [0.001]}
+obj_prism_short(ob_plane): {X: [0.05 -0.2 0.11 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/prism_short.stl>}
+at_prism_short(obj_prism_short) : {X: [0.05 -0.15 0.11, 1 0 0 0], shape: marker, size: [0.1]}
 
-obj_prism_long(ob_plane): {X: [0.05 0.0 0.07 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/prism_long.stl>}
-at_prism_long(obj_prism_long) : {X: [0.05 0.1 0.07, 1 0 0 0], shape: marker, size: [0.001]}
+obj_cube_hollow(ob_plane): {X: [0.15 -0.2 0.11 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/cube_hollow.stl>}
+at_cube_hollow(obj_cube_hollow) : {X: [0.15 -0.22 0.11, 1 0 0 0], shape: marker, size: [0.1]}
 
-obj_square(ob_plane): {X: [0.15 -0.05 0.07 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/square.stl>}
-at_square(obj_square) : {X: [0.15 -0.08 0.07, 1 0 0 0], shape: marker, size: [0.001]}
+#obj_cube(ob_plane): {X: [0.15 -0.1 0.11 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/cube.stl>}
+#at_cube(obj_cube) : {X: [0.15 -0.12 0.11, 1 0 0 0], shape: marker, size: [0.1]}
 
-obj_rectangle(ob_plane): {X: [0.2 0.1 0.07 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/rectangle.stl>}
-at_rectangle(obj_rectangle) : {X: [0.2 0.03 0.07, 1 0 0 0], shape: marker, size: [0.001]}
+obj_cylinder(ob_plane): {X: [0.24 0.0 0.11 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/cylinder.stl>}
+at_cylinder(obj_cylinder) : {X: [0.24 0.05 0.11, 1 0 0 0], shape: marker, size: [0.1]}
 
-obj_prism_short(ob_plane): {X: [0.3 0.0 0.07 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/prism_short.stl>}
-at_prism_short(obj_prism_short) : {X: [0.3 0.05 0.07, 1 0 0 0], shape: marker, size: [0.001]}
+#obj_prism_short_hollow(ob_plane): {X: [0.24 0.12 0.11 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/prism_short_hollow.stl>}
+#at_prism_short_hollow(obj_prism_short_hollow) : {X: [0.19 0.12 0.11 0.7 0 0 0.7], shape: marker, size: [0.1]}
+
+obj_sphere_half_hollow(ob_plane): {X: [-0.05 -0.2 0.11 0.7 0.7 0 0], joint:rigid, color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/simple/sphere_half_hollow.stl>}
+at_sphere_half_hollow(obj_sphere_half_hollow) : {X: [-0.05 -0.22 0.11, 1 0 0 0], shape: marker, size: [0.1]}
+
+
+
+
+
+
+
+
+
 
 cam_front(world): { rel: [0, 1, 1,  0.00000000,   0.00000000,  -0.92387953,   0.38268344 ], shape: marker, size: [0.1], width: 240, height: 240, focalLength: 3, zRange: [0.5, 3] },
 cam_back(world): { rel: [0, -1, 1,    0.38268343,  -0.92387953,   0.00000000,   0.00000000 ], shape: marker, size: [0.1], width: 240, height: 240, focalLength: 3, zRange: [0.5, 3] },

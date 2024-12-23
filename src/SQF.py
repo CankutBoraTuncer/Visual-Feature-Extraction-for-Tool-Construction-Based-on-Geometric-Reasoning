@@ -195,7 +195,7 @@ class SQF():
                 x0=x_init,
                 method='trf',
                 bounds=bounds,
-                max_nfev=5000,
+                max_nfev=2000,
                 ftol=1e-6,
                 xtol=1e-6,
                 verbose=self.verbose

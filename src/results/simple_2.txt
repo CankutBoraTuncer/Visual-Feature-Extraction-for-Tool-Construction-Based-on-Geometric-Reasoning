@@ -1,0 +1,13 @@
+Finding the best matching candidate objects to the reference tool set
+Matches: [('spoon_head', 'obj_sphere_half_hollow'), ('spoon_body', 'obj_prism_short')], Total Error: 0.3496, Shape Error: 0.0420, Size Error: 0.1892, Ratio Error: 0.2367
+Matches: [('spoon_head', 'obj_cube_hollow'), ('spoon_body', 'obj_prism_short')], Total Error: 1.2797, Shape Error: 0.6521, Size Error: 0.3381, Ratio Error: 0.5789
+Matches: [('spoon_head', 'obj_sphere_half_hollow'), ('spoon_body', 'obj_cylinder')], Total Error: 1.4811, Shape Error: 0.9165, Size Error: 0.3267, Ratio Error: 0.4758
+Matches: [('spoon_head', 'obj_cylinder'), ('spoon_body', 'obj_prism_short')], Total Error: 1.6141, Shape Error: 0.7511, Size Error: 0.4938, Ratio Error: 0.7382
+Matches: [('spoon_head', 'obj_sphere_half_hollow'), ('spoon_body', 'obj_cube_hollow')], Total Error: 1.8570, Shape Error: 0.6933, Size Error: 0.6885, Ratio Error: 0.9505
+Matches: [('spoon_head', 'obj_cube_hollow'), ('spoon_body', 'obj_cylinder')], Total Error: 2.4112, Shape Error: 1.5266, Size Error: 0.4756, Ratio Error: 0.8179
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_cylinder')], Total Error: 3.1021, Shape Error: 1.8714, Size Error: 0.7234, Ratio Error: 1.0147
+Matches: [('spoon_head', 'obj_cylinder'), ('spoon_body', 'obj_cube_hollow')], Total Error: 3.1215, Shape Error: 1.4024, Size Error: 0.9931, Ratio Error: 1.4520
+Matches: [('spoon_head', 'obj_cube_hollow'), ('spoon_body', 'obj_sphere_half_hollow')], Total Error: 3.1586, Shape Error: 1.6909, Size Error: 0.8484, Ratio Error: 1.2386
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_cube_hollow')], Total Error: 3.4780, Shape Error: 1.6481, Size Error: 1.0852, Ratio Error: 1.4895
+Matches: [('spoon_head', 'obj_cylinder'), ('spoon_body', 'obj_sphere_half_hollow')], Total Error: 3.4930, Shape Error: 1.7899, Size Error: 1.0041, Ratio Error: 1.3979
+Matches: [('spoon_head', 'obj_prism_short'), ('spoon_body', 'obj_sphere_half_hollow')], Total Error: 3.8495, Shape Error: 2.0357, Size Error: 1.0962, Ratio Error: 1.4354
