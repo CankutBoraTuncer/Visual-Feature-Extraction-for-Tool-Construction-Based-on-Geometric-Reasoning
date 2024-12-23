@@ -41,3 +41,25 @@ Matches: [('hammer_head', 'obj_prism_short'), ('hammer_handle', 'obj_sphere')], 
 Matches: [('hammer_head', 'obj_sphere'), ('hammer_handle', 'obj_sphere_hollow')], Total Error: 3.9665, Shape Error: 2.2941, Size Error: 1.0348, Ratio Error: 1.2752
 Matches: [('hammer_head', 'obj_prism_long'), ('hammer_handle', 'obj_sphere')], Total Error: 4.0213, Shape Error: 1.2238, Size Error: 1.7769, Ratio Error: 2.0411
 Matches: [('hammer_head', 'obj_sphere_hollow'), ('hammer_handle', 'obj_sphere')], Total Error: 4.3757, Shape Error: 2.2941, Size Error: 1.2685, Ratio Error: 1.6262
+
+
+Matches: [('shovel_head', 'obj_prism_short_hollow'), ('shovel_handle', 'obj_prism_long')], Total Error: 0.6490, Shape Error: 0.0000, Size Error: 0.3205, Ratio Error: 0.6572
+Matches: [('shovel_head', 'obj_prism_short'), ('shovel_handle', 'obj_prism_long')], Total Error: 0.6580, Shape Error: 0.0000, Size Error: 0.3423, Ratio Error: 0.6315
+Matches: [('shovel_head', 'obj_prism_short_hollow'), ('shovel_handle', 'obj_prism_short')], Total Error: 0.9240, Shape Error: 0.0000, Size Error: 0.5327, Ratio Error: 0.7825
+Matches: [('shovel_head', 'obj_prism_short'), ('shovel_handle', 'obj_prism_short_hollow')], Total Error: 0.9511, Shape Error: 0.0000, Size Error: 0.5848, Ratio Error: 0.7327
+Matches: [('shovel_head', 'obj_prism_long'), ('shovel_handle', 'obj_prism_short')], Total Error: 1.2823, Shape Error: 0.0000, Size Error: 0.7753, Ratio Error: 1.0140
+Matches: [('shovel_head', 'obj_prism_long'), ('shovel_handle', 'obj_prism_short_hollow')], Total Error: 1.3005, Shape Error: 0.0000, Size Error: 0.8056, Ratio Error: 0.9899
+Matches: [('shovel_head', 'obj_sphere_hollow'), ('shovel_handle', 'obj_prism_long')], Total Error: 1.6074, Shape Error: 1.0703, Size Error: 0.2816, Ratio Error: 0.5111
+Matches: [('shovel_head', 'obj_sphere_hollow'), ('shovel_handle', 'obj_prism_short')], Total Error: 1.8824, Shape Error: 1.0703, Size Error: 0.4938, Ratio Error: 0.6365
+Matches: [('shovel_head', 'obj_sphere_hollow'), ('shovel_handle', 'obj_prism_short_hollow')], Total Error: 1.9006, Shape Error: 1.0703, Size Error: 0.5241, Ratio Error: 0.6123
+Matches: [('shovel_head', 'obj_sphere'), ('shovel_handle', 'obj_prism_long')], Total Error: 2.1235, Shape Error: 1.2238, Size Error: 0.5687, Ratio Error: 0.6620
+Matches: [('shovel_head', 'obj_sphere'), ('shovel_handle', 'obj_prism_short')], Total Error: 2.3984, Shape Error: 1.2238, Size Error: 0.7809, Ratio Error: 0.7873
+Matches: [('shovel_head', 'obj_sphere'), ('shovel_handle', 'obj_prism_short_hollow')], Total Error: 2.4166, Shape Error: 1.2238, Size Error: 0.8112, Ratio Error: 0.7632
+Matches: [('shovel_head', 'obj_prism_short_hollow'), ('shovel_handle', 'obj_sphere_hollow')], Total Error: 2.8352, Shape Error: 1.0703, Size Error: 1.0272, Ratio Error: 1.4754
+Matches: [('shovel_head', 'obj_prism_short'), ('shovel_handle', 'obj_sphere_hollow')], Total Error: 2.8442, Shape Error: 1.0703, Size Error: 1.0490, Ratio Error: 1.4498
+Matches: [('shovel_head', 'obj_prism_long'), ('shovel_handle', 'obj_sphere_hollow')], Total Error: 3.1936, Shape Error: 1.0703, Size Error: 1.2698, Ratio Error: 1.7070
+Matches: [('shovel_head', 'obj_prism_short_hollow'), ('shovel_handle', 'obj_sphere')], Total Error: 3.3027, Shape Error: 1.2238, Size Error: 1.2898, Ratio Error: 1.5782
+Matches: [('shovel_head', 'obj_prism_short'), ('shovel_handle', 'obj_sphere')], Total Error: 3.3117, Shape Error: 1.2238, Size Error: 1.3116, Ratio Error: 1.5526
+Matches: [('shovel_head', 'obj_prism_long'), ('shovel_handle', 'obj_sphere')], Total Error: 3.6611, Shape Error: 1.2238, Size Error: 1.5324, Ratio Error: 1.8098
+Matches: [('shovel_head', 'obj_sphere_hollow'), ('shovel_handle', 'obj_sphere')], Total Error: 4.2611, Shape Error: 2.2941, Size Error: 1.2509, Ratio Error: 1.4322
+Matches: [('shovel_head', 'obj_sphere'), ('shovel_handle', 'obj_sphere_hollow')], Total Error: 4.3096, Shape Error: 2.2941, Size Error: 1.2754, Ratio Error: 1.4802

@@ -12,3 +12,6 @@ rake(world): {X: [-0.1 0.1 0.2 0.7 0 -0.7 0], color: [0, 1, 1], contact: 1, shap
 scraper(world): {X: [0 0.1 0.2 0.7 0 -0.7 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/tools/simple/whole/scraper_s.stl>}
 screwdriver(world): {X: [0.1 0.1 0.2 0.7 0 -0.7 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/tools/simple/whole/screwdriver_s.stl>}
 shovel(world): {X: [0.2 0.1 0.2 1 0 0 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/tools/simple/whole/shovel_s.stl>}
+
+spoon_head(world): {X: [0.35 0.1 0.2 0.7 0.7 0 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/tools/simple/parts/spoon_head.stl>}
+spoon_handle(world): {X: [0.35 0.195 0.2 0.7 0.7 0 0], color: [0, 1, 1], contact: 1, shape: mesh, visual: True, mesh: <../models/tools/simple/parts/spoon_body.stl>}
