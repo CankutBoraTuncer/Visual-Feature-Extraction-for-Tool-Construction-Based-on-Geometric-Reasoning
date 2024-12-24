@@ -1,0 +1,11 @@
+Point Cloud Name,Base Residue Scores,Our Residue Scores
+hammer_small.ply,0.0176,0.0455
+knife.ply,0.0342,0.1817
+plier.ply,0.018,0.0105
+rake.ply,0.0206,0.0222
+scraper.ply,0.0132,0.0136
+screwdriver_flat.ply,0.0163,0.0107
+screwdriver_phlips.ply,0.0158,0.0304
+spatula.ply,0.007,0.0462
+spatula_small.ply,0.0028,0.0171
+torus.ply,0.1242,0.2037

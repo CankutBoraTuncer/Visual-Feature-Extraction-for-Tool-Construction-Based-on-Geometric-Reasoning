@@ -1,0 +1,13 @@
+Point Cloud Name, Residue
+hammer_large.ply, 0.0222
+hammer_small.ply, 0.0176
+knife.ply, 0.0342
+plier.ply, 0.0180
+rake.ply, 0.0206
+scraper.ply, 0.0132
+screwdriver_flat.ply, 0.0163
+screwdriver_phlips.ply, 0.0158
+shovel.ply, 0.0335
+spatula.ply, 0.0070
+spatula_small.ply, 0.0028
+torus.ply, 0.1242
